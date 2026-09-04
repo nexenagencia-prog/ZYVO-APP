@@ -5,7 +5,6 @@ import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import heroImage from '../../public/zyvo-hero-reference.webp';
 import Sidebar from '@/components/Sidebar';
-import FaceScanner from '@/components/FaceScanner';
 
 const hotspots = [
   ['brand','/','ZYVO'],['profile','/configuracoes','Perfil'],['nav-home','/','Início'],['nav-skills','/skills','Skills'],['nav-agenda','/agenda','Agenda'],['nav-plans','/planos','Planos e Preços'],['nav-access','/login','Acessar'],
@@ -27,7 +26,6 @@ export default function HomePage() {
         <input id="zyvo-search" value={query} onChange={e=>setQuery(e.target.value)} aria-label="Buscar reuniões, pessoas ou gravações" autoComplete="off" />
       </form>
       {hotspots.map(([cls,href,label]) => <Link key={`${cls}-${href}`} href={href} className={`hotspot ${cls}`} aria-label={label} title={label}><span className="sr-only">{label}</span></Link>)}
-      <FaceScanner />
       <Sidebar />
     </section>
   </main>;
