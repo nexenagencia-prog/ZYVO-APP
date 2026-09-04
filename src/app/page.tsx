@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import heroImage from '../../public/zyvo-hero-reference.webp';
 import Sidebar from '@/components/Sidebar';
 
 const hotspots = [
@@ -19,7 +18,7 @@ export default function HomePage() {
 
   return <main className="viewport">
     <section className="stage" aria-label="ZYVO — Reuniões com Performance Pro">
-      <img className="artwork" src={heroImage.src} alt="ZYVO — Reuniões com Performance Pro" draggable={false}/>
+      <img className="artwork" src="/zyvo-hero-reference.webp" alt="ZYVO — Reuniões com Performance Pro" draggable={false}/>
       <h1 className="sr-only">Reuniões com Performance Pro</h1>
       <form className="search-layer" onSubmit={submit}>
         <label htmlFor="zyvo-search" className="sr-only">Buscar reuniões, pessoas ou gravações</label>
