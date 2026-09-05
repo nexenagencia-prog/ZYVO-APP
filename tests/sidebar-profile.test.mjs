@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 const sidebar = readFileSync(new URL('../src/components/Sidebar.tsx', import.meta.url), 'utf8');
 const page = readFileSync(new URL('../src/app/page.tsx', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../src/app/globals.css', import.meta.url), 'utf8');
+const scanCss = readFileSync(new URL('../src/app/faceScan.module.css', import.meta.url), 'utf8');
 
 test('sidebar exposes editable profile name and image with persistence', () => {
   assert.match(sidebar, /zyvo-profile/);
@@ -42,11 +43,15 @@ test('quick actions keep four equal columns with subtle vertical separators', ()
   assert.match(css, /\.quick-action svg\{[^}]*stroke-width:1\.35/);
 });
 
-test('facial reading overlay animates subtly and respects reduced motion', () => {
-  assert.match(page, /className="face-scan"/);
-  assert.match(page, /scan-line/);
-  assert.match(page, /scan-node/);
-  assert.match(css, /@keyframes faceScanSweep/);
-  assert.match(css, /@keyframes faceNodePulse/);
-  assert.match(css, /prefers-reduced-motion:reduce[^}]*face-scan/s);
+test('facial reader keeps the photo mesh and only animates scanner and light', () => {
+  assert.match(page, /nativeFaceScan/);
+  assert.match(page, /nativeScanLine/);
+  assert.match(page, /nativeLineGlow/);
+  assert.doesNotMatch(page, /scan-mesh/);
+  assert.doesNotMatch(page, /scan-node/);
+  assert.doesNotMatch(page, /<svg viewBox="0 0 420 520"/);
+  assert.match(scanCss, /@keyframes scannerTravel/);
+  assert.match(scanCss, /animation-direction:alternate/);
+  assert.match(scanCss, /@keyframes nativeLineBreath/);
+  assert.match(scanCss, /prefers-reduced-motion:reduce/);
 });
