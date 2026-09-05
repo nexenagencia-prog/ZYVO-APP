@@ -4,6 +4,14 @@ import Link from 'next/link';
 import { FormEvent, ReactNode, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
+import hero0 from '@/lib/hero45-0';
+import hero1 from '@/lib/hero45-1';
+import hero2 from '@/lib/hero45-2';
+import hero3 from '@/lib/hero45-3';
+import hero4 from '@/lib/hero45-4';
+import hero5 from '@/lib/hero45-5';
+
+const hero4K = `data:image/avif;base64,${hero0}${hero1}${hero2}${hero3}${hero4}${hero5}`;
 
 function Icon({ children, size = 20 }: { children: ReactNode; size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
@@ -32,10 +40,12 @@ export default function HomePage() {
 
       <div className="hero-visual" aria-hidden="true">
         <img
-          src="/zyvo-hero-reference.webp"
+          src={hero4K}
           alt=""
           draggable={false}
-          style={{position:'absolute',height:'112%',width:'auto',maxWidth:'none',right:'-80px',top:'-105px',objectFit:'fill',objectPosition:'center'}}
+          width={3840}
+          height={2160}
+          style={{position:'absolute',inset:0,width:'100%',height:'100%',maxWidth:'none',objectFit:'cover',objectPosition:'center'}}
         />
       </div>
       <div className="hero-veil" aria-hidden="true" />
