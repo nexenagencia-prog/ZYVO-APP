@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { FormEvent, ReactNode, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { ReactNode, useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
+import Topbar from '@/components/Topbar';
 import hero0 from '@/lib/hero45-0';
 import hero1 from '@/lib/hero45-1';
 import hero2 from '@/lib/hero45-2';
@@ -30,10 +30,7 @@ const quickActions = [
 ];
 
 export default function HomePage() {
-  const router = useRouter();
-  const [query, setQuery] = useState('');
   const [profileName, setProfileName] = useState(DEFAULT_NAME);
-
   useEffect(() => {
     const loadProfile = () => {
       try {
@@ -41,98 +38,35 @@ export default function HomePage() {
         if (!stored) return;
         const profile = JSON.parse(stored) as { name?: string };
         if (profile.name?.trim()) setProfileName(profile.name.trim());
-      } catch {
-        // Keep default greeting when profile storage is unavailable.
-      }
+      } catch {}
     };
-
     const onProfileUpdated = (event: Event) => {
       const detail = (event as CustomEvent<{ name?: string }>).detail;
-      if (detail?.name?.trim()) setProfileName(detail.name.trim());
-      else loadProfile();
+      if (detail?.name?.trim()) setProfileName(detail.name.trim()); else loadProfile();
     };
-
     loadProfile();
     window.addEventListener(PROFILE_EVENT, onProfileUpdated);
     window.addEventListener('storage', loadProfile);
-    return () => {
-      window.removeEventListener(PROFILE_EVENT, onProfileUpdated);
-      window.removeEventListener('storage', loadProfile);
-    };
+    return () => { window.removeEventListener(PROFILE_EVENT, onProfileUpdated); window.removeEventListener('storage', loadProfile); };
   }, []);
 
-  const submit = (event: FormEvent) => {
-    event.preventDefault();
-    const value = query.trim();
-    if (value) router.push(`/reunioes?q=${encodeURIComponent(value)}`);
-  };
-
-  return (
-    <main className="home-shell">
-      <Sidebar />
-
-      <div className="hero-visual" aria-hidden="true">
-        <img src={hero4K} alt="" draggable={false} width={3840} height={2160} />
+  return <main className="home-shell">
+    <Sidebar />
+    <div className="hero-visual" aria-hidden="true"><img src={hero4K} alt="" draggable={false} width={3840} height={2160} /></div>
+    <div className={styles.nativeFaceScan} aria-hidden="true"><span className={styles.nativeLineGlow} /><span className={styles.nativeScanLine} /></div>
+    <div className="hero-shade" aria-hidden="true" />
+    <Topbar />
+    <section className="hero-copy" aria-labelledby="home-title">
+      <p className="greeting">Olá, <strong>{profileName}</strong></p>
+      <p className="eyebrow">TECNOLOGIA QUE TRANSFORMA</p>
+      <h1 id="home-title">Reuniões com<br/><span>Performance Pro</span></h1>
+      <p className="lead">Ferramentas inteligentes para reuniões mais produtivas, análises precisas e resultados que fazem a diferença.</p>
+      <div className="hero-actions">
+        <Link className="primary-action" href="/reuniao-instantanea"><Icon size={20}><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></Icon><span>Criar reunião</span><span className="plus">+</span></Link>
+        <Link className="secondary-action" href="/reunioes"><Icon size={20}><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></Icon><span>Entrar</span></Link>
       </div>
-
-      <div className={styles.nativeFaceScan} aria-hidden="true">
-        <span className={styles.nativeLineGlow} />
-        <span className={styles.nativeScanLine} />
-      </div>
-
-      <div className="hero-shade" aria-hidden="true" />
-
-      <header className="topbar">
-        <Link href="/" className="wordmark" aria-label="ZYVO início">ZYVO</Link>
-
-        <form className="search-box" onSubmit={submit}>
-          <Icon size={18}><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></Icon>
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar reuniões ou pessoas" aria-label="Buscar reuniões ou pessoas" />
-          <span className="shortcut">⌘ K</span>
-        </form>
-
-        <nav className="topnav" aria-label="Navegação principal">
-          <Link className="active" href="/">Início</Link>
-          <Link href="/skills">Skills</Link>
-          <Link href="/agenda">Agenda</Link>
-          <Link href="/planos">Planos e preços</Link>
-        </nav>
-
-        <Link href="/login" className="access-button">
-          <span>Acessar</span>
-          <Icon size={18}><path d="M5 12h13M14 7l5 5-5 5"/></Icon>
-        </Link>
-      </header>
-
-      <section className="hero-copy" aria-labelledby="home-title">
-        <p className="greeting">Olá, <strong>{profileName}</strong></p>
-        <p className="eyebrow">TECNOLOGIA QUE TRANSFORMA</p>
-        <h1 id="home-title">Reuniões com<br/><span>Performance Pro</span></h1>
-        <p className="lead">Ferramentas inteligentes para reuniões mais produtivas, análises precisas e resultados que fazem a diferença.</p>
-
-        <div className="hero-actions">
-          <Link className="primary-action" href="/reuniao-instantanea">
-            <Icon size={20}><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></Icon>
-            <span>Criar reunião</span>
-            <span className="plus">+</span>
-          </Link>
-          <Link className="secondary-action" href="/reunioes">
-            <Icon size={20}><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"/></Icon>
-            <span>Entrar</span>
-          </Link>
-        </div>
-
-        <div className="quick-actions" aria-label="Ações rápidas">
-          {quickActions.map((item) => (
-            <Link key={item.href} href={item.href} className="quick-action">
-              <Icon size={22}>{item.icon}</Icon>
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </div>
-
-        <p className="motto">CONECTE · EVOLUA · REALIZE MAIS</p>
-      </section>
-    </main>
-  );
+      <div className="quick-actions" aria-label="Ações rápidas">{quickActions.map((item)=><Link key={item.href} href={item.href} className="quick-action"><Icon size={22}>{item.icon}</Icon><span>{item.label}</span></Link>)}</div>
+      <p className="motto">CONECTE · EVOLUA · REALIZE MAIS</p>
+    </section>
+  </main>;
 }
