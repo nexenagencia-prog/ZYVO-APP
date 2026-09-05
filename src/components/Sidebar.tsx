@@ -86,6 +86,10 @@ export default function Sidebar() {
     <nav className={styles.nav} aria-label="Menu principal">
       {items.map((item)=><Link key={item.href} href={item.href} className={`${styles.navItem} ${isActive(item.href) ? styles.selected : ''}`} aria-current={isActive(item.href)?'page':undefined} aria-label={item.label} title={open?undefined:item.label}><span className={styles.itemIcon}><RailIcon>{item.icon}</RailIcon></span><span className={styles.itemLabel}>{item.label}</span></Link>)}
     </nav>
-    <div className={styles.bottomControl}><button className={styles.toggleButton} type="button" onClick={()=>setOpen((value)=>!value)} aria-label={open?'Recolher menu':'Expandir menu'} aria-expanded={open}><RailIcon><path d="m9 7 5 5-5 5"/></RailIcon></button></div>
+    <div className={styles.bottomControl}>
+      <button className={styles.toggleButton} type="button" onClick={()=>setOpen((value)=>!value)} aria-label={open ? 'Recolher menu' : 'Expandir menu'} aria-expanded={open}>
+        <RailIcon><path d="m9 7 5 5-5 5"/></RailIcon>
+      </button>
+    </div>
   </aside>;
 }
