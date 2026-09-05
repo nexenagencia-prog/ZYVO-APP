@@ -11,6 +11,7 @@ import hero3 from '@/lib/hero45-3';
 import hero4 from '@/lib/hero45-4';
 import hero5 from '@/lib/hero45-5';
 import styles from './faceScan.module.css';
+import './reference-refinement.css';
 
 const PROFILE_KEY = 'zyvo-profile';
 const PROFILE_EVENT = 'zyvo-profile-updated';
