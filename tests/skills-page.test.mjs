@@ -12,3 +12,5 @@ test('all four reference images stay assigned to their correct cards',()=>{const
 test('desktop board is fully visible without bottom clipping',()=>{const css=read('src/app/skills/skills.module.css');assert.match(css,/height:100dvh/);assert.match(css,/overflow:hidden/);assert.match(css,/grid-template-rows:minmax\(0,1\.4fr\) minmax\(0,1fr\)/);assert.match(css,/height:calc\(100dvh - var\(--header-height\) - 28px\)/);assert.match(css,/min-height:0/);assert.match(css,/@media\(max-height:900px\)/)});
 
 test('card imagery renders cleanly at full cover',()=>{const css=read('src/app/skills/skills.module.css');assert.match(css,/\.heroMedia[^}]*background-size:cover/);assert.match(css,/\.cardMedia[^}]*background-size:cover/);assert.match(css,/filter:none/)});
+
+test('skills card media cannot bleed across cards and analysis fills the whole card',()=>{const page=read('src/app/skills/page.tsx'),css=read('src/app/skills/skills.module.css');assert.match(css,/\.card\{[^}]*isolation:isolate/);assert.match(css,/\.card\{[^}]*contain:paint/);assert.match(page,/objectFit:'cover'/);assert.match(page,/const analysisMedia=analysisRef/)});
