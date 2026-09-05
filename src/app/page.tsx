@@ -14,7 +14,7 @@ import hero5 from '@/lib/hero45-5';
 const hero4K = `data:image/avif;base64,${hero0}${hero1}${hero2}${hero3}${hero4}${hero5}`;
 
 function Icon({ children, size = 20 }: { children: ReactNode; size?: number }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.55" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
 }
 
 const quickActions = [
