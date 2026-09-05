@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ReactNode, useState } from 'react';
+import { heroDataUri } from '@/lib/heroData';
 
 function RailIcon({ children }: { children: ReactNode }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
@@ -23,7 +24,7 @@ export default function Sidebar() {
   return <>
     <aside className="rail" aria-label="Navegação lateral">
       <Link href="/configuracoes" className="rail-avatar" aria-label="Perfil">
-        <img src="/zyvo-hero-visual.webp" alt="Perfil" />
+        <img src={heroDataUri} alt="Perfil" />
         <span />
       </Link>
 
