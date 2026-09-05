@@ -10,6 +10,7 @@ import hero2 from '@/lib/hero45-2';
 import hero3 from '@/lib/hero45-3';
 import hero4 from '@/lib/hero45-4';
 import hero5 from '@/lib/hero45-5';
+import styles from './faceScan.module.css';
 
 const PROFILE_KEY = 'zyvo-profile';
 const PROFILE_EVENT = 'zyvo-profile-updated';
@@ -73,30 +74,9 @@ export default function HomePage() {
         <img src={hero4K} alt="" draggable={false} width={3840} height={2160} />
       </div>
 
-      <div className="face-scan" aria-hidden="true">
-        <svg viewBox="0 0 420 520" role="presentation">
-          <g className="scan-mesh">
-            <path d="M108 132 156 112 210 122 262 110 311 134"/>
-            <path d="M121 164 163 149 210 157 257 148 298 165"/>
-            <path d="M132 202 170 185 210 196 250 184 288 203"/>
-            <path d="M139 239 175 224 210 233 245 223 281 239"/>
-            <path d="M151 278 180 262 210 270 241 261 270 279"/>
-            <path d="M165 318 187 300 210 307 234 300 257 319"/>
-            <path d="M178 356 194 338 210 343 227 338 243 356"/>
-            <path d="M156 112 163 149 170 185 175 224 180 262 187 300 194 338"/>
-            <path d="M262 110 257 148 250 184 245 223 241 261 234 300 227 338"/>
-            <path d="M210 122 210 157 210 196 210 233 210 270 210 307 210 343"/>
-            <path d="M121 164 170 185 210 196 250 184 298 165"/>
-            <path d="M139 239 175 224 210 233 245 223 281 239"/>
-            <path d="M151 278 180 262 210 270 241 261 270 279"/>
-          </g>
-          <g className="scan-nodes">
-            {[ [156,112],[210,122],[262,110],[163,149],[210,157],[257,148],[170,185],[210,196],[250,184],[175,224],[210,233],[245,223],[180,262],[210,270],[241,261],[187,300],[210,307],[234,300],[194,338],[210,343],[227,338] ].map(([cx, cy], index) => (
-              <circle key={`${cx}-${cy}`} className="scan-node" cx={cx} cy={cy} r="2.2" style={{ animationDelay: `${(index % 7) * 0.18}s` }} />
-            ))}
-          </g>
-        </svg>
-        <span className="scan-line" />
+      <div className={styles.nativeFaceScan} aria-hidden="true">
+        <span className={styles.nativeLineGlow} />
+        <span className={styles.nativeScanLine} />
       </div>
 
       <div className="hero-shade" aria-hidden="true" />
