@@ -1,10 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 function RailIcon({ children }: { children: ReactNode }) {
-  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.55" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
 }
 
 const items = [
@@ -15,16 +15,25 @@ const items = [
   { label: 'Minhas anotações', href: '/minhas-anotacoes', icon: <><path d="M6 3h9l3 3v15H6z"/><path d="M15 3v4h4M9 12h6M9 16h6"/></> },
   { label: 'Configurações', href: '/configuracoes', icon: <><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.8 1.8 0 0 0 .4 2l.1.1-2.8 2.8-.1-.1a1.8 1.8 0 0 0-2-.4 1.8 1.8 0 0 0-1 1.6V21h-4v-.1a1.8 1.8 0 0 0-1-1.6 1.8 1.8 0 0 0-2 .4l-.1.1-2.8-2.8.1-.1a1.8 1.8 0 0 0 .4-2 1.8 1.8 0 0 0-1.6-1H3v-4h.1a1.8 1.8 0 0 0 1.6-1 1.8 1.8 0 0 0-.4-2l-.1-.1L7 4l.1.1a1.8 1.8 0 0 0 2 .4 1.8 1.8 0 0 0 1-1.6V3h4v.1a1.8 1.8 0 0 0 1 1.6 1.8 1.8 0 0 0 2-.4l.1-.1L20 7l-.1.1a1.8 1.8 0 0 0-.4 2 1.8 1.8 0 0 0 1.6 1h.1v4h-.1a1.8 1.8 0 0 0-1.7.9Z"/></> },
   { label: 'Notificações', href: '/notificacoes', icon: <><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></> },
+  { label: 'Skills', href: '/skills', icon: <><path d="M12 3 4 8v8l8 5 8-5V8z"/><path d="m8 10 4 3 4-3"/></> },
 ] as const;
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   return <>
     <aside className="rail" aria-label="Navegação lateral">
       <Link href="/configuracoes" className="rail-avatar" aria-label="Perfil">
-        <img src="/zyvo-hero-reference.webp" alt="Perfil" style={{objectPosition:'66% 43%'}} />
-        <span />
+        <span className="avatar-monogram">SB</span>
+        <span className="status-dot" aria-hidden="true" />
       </Link>
 
       <nav className="rail-nav">
@@ -38,7 +47,7 @@ export default function Sidebar() {
         </Link>
       </nav>
 
-      <button className="rail-menu" type="button" onClick={() => setOpen(true)} aria-label="Expandir menu">
+      <button className="rail-menu" type="button" onClick={() => setOpen((value) => !value)} aria-label={open ? 'Recolher menu' : 'Expandir menu'} aria-expanded={open}>
         <span/><span/><span/>
       </button>
     </aside>
@@ -51,15 +60,11 @@ export default function Sidebar() {
       </div>
       <nav>
         {items.map((item) => (
-          <Link key={item.href + item.label} href={item.href} tabIndex={open ? 0 : -1} onClick={() => setOpen(false)}>
+          <Link key={item.href} href={item.href} tabIndex={open ? 0 : -1} onClick={() => setOpen(false)}>
             <span className="panel-icon"><RailIcon>{item.icon}</RailIcon></span>
             <span>{item.label}</span>
           </Link>
         ))}
-        <Link href="/skills" tabIndex={open ? 0 : -1} onClick={() => setOpen(false)}>
-          <span className="panel-icon"><RailIcon><path d="M12 3 4 8v8l8 5 8-5V8z"/><path d="m8 10 4 3 4-3"/></RailIcon></span>
-          <span>Skills</span>
-        </Link>
       </nav>
     </aside>
   </>;
