@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FormEvent, ReactNode, useState } from 'react';
+import { FormEvent, ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
 import hero0 from '@/lib/hero45-0';
@@ -11,6 +11,9 @@ import hero3 from '@/lib/hero45-3';
 import hero4 from '@/lib/hero45-4';
 import hero5 from '@/lib/hero45-5';
 
+const PROFILE_KEY = 'zyvo-profile';
+const PROFILE_EVENT = 'zyvo-profile-updated';
+const DEFAULT_NAME = 'Sandro Bello';
 const hero4K = `data:image/avif;base64,${hero0}${hero1}${hero2}${hero3}${hero4}${hero5}`;
 
 function Icon({ children, size = 20 }: { children: ReactNode; size?: number }) {
@@ -27,6 +30,34 @@ const quickActions = [
 export default function HomePage() {
   const router = useRouter();
   const [query, setQuery] = useState('');
+  const [profileName, setProfileName] = useState(DEFAULT_NAME);
+
+  useEffect(() => {
+    const loadProfile = () => {
+      try {
+        const stored = localStorage.getItem(PROFILE_KEY);
+        if (!stored) return;
+        const profile = JSON.parse(stored) as { name?: string };
+        if (profile.name?.trim()) setProfileName(profile.name.trim());
+      } catch {
+        // Keep default greeting when profile storage is unavailable.
+      }
+    };
+
+    const onProfileUpdated = (event: Event) => {
+      const detail = (event as CustomEvent<{ name?: string }>).detail;
+      if (detail?.name?.trim()) setProfileName(detail.name.trim());
+      else loadProfile();
+    };
+
+    loadProfile();
+    window.addEventListener(PROFILE_EVENT, onProfileUpdated);
+    window.addEventListener('storage', loadProfile);
+    return () => {
+      window.removeEventListener(PROFILE_EVENT, onProfileUpdated);
+      window.removeEventListener('storage', loadProfile);
+    };
+  }, []);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -41,6 +72,33 @@ export default function HomePage() {
       <div className="hero-visual" aria-hidden="true">
         <img src={hero4K} alt="" draggable={false} width={3840} height={2160} />
       </div>
+
+      <div className="face-scan" aria-hidden="true">
+        <svg viewBox="0 0 420 520" role="presentation">
+          <g className="scan-mesh">
+            <path d="M108 132 156 112 210 122 262 110 311 134"/>
+            <path d="M121 164 163 149 210 157 257 148 298 165"/>
+            <path d="M132 202 170 185 210 196 250 184 288 203"/>
+            <path d="M139 239 175 224 210 233 245 223 281 239"/>
+            <path d="M151 278 180 262 210 270 241 261 270 279"/>
+            <path d="M165 318 187 300 210 307 234 300 257 319"/>
+            <path d="M178 356 194 338 210 343 227 338 243 356"/>
+            <path d="M156 112 163 149 170 185 175 224 180 262 187 300 194 338"/>
+            <path d="M262 110 257 148 250 184 245 223 241 261 234 300 227 338"/>
+            <path d="M210 122 210 157 210 196 210 233 210 270 210 307 210 343"/>
+            <path d="M121 164 170 185 210 196 250 184 298 165"/>
+            <path d="M139 239 175 224 210 233 245 223 281 239"/>
+            <path d="M151 278 180 262 210 270 241 261 270 279"/>
+          </g>
+          <g className="scan-nodes">
+            {[ [156,112],[210,122],[262,110],[163,149],[210,157],[257,148],[170,185],[210,196],[250,184],[175,224],[210,233],[245,223],[180,262],[210,270],[241,261],[187,300],[210,307],[234,300],[194,338],[210,343],[227,338] ].map(([cx, cy], index) => (
+              <circle key={`${cx}-${cy}`} className="scan-node" cx={cx} cy={cy} r="2.2" style={{ animationDelay: `${(index % 7) * 0.18}s` }} />
+            ))}
+          </g>
+        </svg>
+        <span className="scan-line" />
+      </div>
+
       <div className="hero-shade" aria-hidden="true" />
 
       <header className="topbar">
@@ -66,6 +124,7 @@ export default function HomePage() {
       </header>
 
       <section className="hero-copy" aria-labelledby="home-title">
+        <p className="greeting">Olá, bem-vindo, <strong>{profileName}</strong>.</p>
         <p className="eyebrow">TECNOLOGIA QUE TRANSFORMA</p>
         <h1 id="home-title">Reuniões com<br/><span>Performance Pro</span></h1>
         <p className="lead">Ferramentas inteligentes para reuniões mais produtivas, análises precisas e resultados que fazem a diferença.</p>
@@ -85,7 +144,7 @@ export default function HomePage() {
         <div className="quick-actions" aria-label="Ações rápidas">
           {quickActions.map((item) => (
             <Link key={item.href} href={item.href} className="quick-action">
-              <Icon size={21}>{item.icon}</Icon>
+              <Icon size={22}>{item.icon}</Icon>
               <span>{item.label}</span>
             </Link>
           ))}
