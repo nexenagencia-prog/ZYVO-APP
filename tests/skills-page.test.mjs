@@ -30,23 +30,27 @@ test('skills uses the approved editorial card structure', () => {
   assert.match(page, /EVOLUA/);
 });
 
-test('skills uses imagery extracted from the approved reference in every visual card', () => {
+test('reference imagery is isolated to visual zones without a duplicated text backdrop', () => {
   const page = read('src/app/skills/page.tsx');
+  const css = read('src/app/skills/skills.module.css');
   assert.match(page, /skills-ref-hero/);
-  assert.match(page, /skills-ref-performance/);
   assert.match(page, /skills-ref-insights/);
   assert.match(page, /skills-ref-meeting/);
   assert.match(page, /skills-ref-analysis/);
-  assert.match(page, /backgroundImage/);
+  assert.doesNotMatch(page, /skills-ref-performance/);
+  assert.match(page, /heroMedia/);
+  assert.match(page, /cardMedia/);
+  assert.match(css, /background-size:1[5-9]0%/);
 });
 
 test('skills desktop dashboard fits completely inside the viewport', () => {
   const css = read('src/app/skills/skills.module.css');
   assert.match(css, /height:100dvh/);
   assert.match(css, /overflow:hidden/);
-  assert.match(css, /topbar-offset:82px/);
-  assert.match(css, /height:calc\(100dvh - var\(--topbar-offset\) - 16px\)/);
-  assert.match(css, /grid-template-columns:minmax\(0,1\.02fr\) minmax\(0,\.79fr\) minmax\(260px,\.61fr\)/);
+  assert.match(css, /topbar-offset:74px/);
+  assert.match(css, /height:calc\(100dvh - var\(--topbar-offset\) - 10px\)/);
+  assert.match(css, /min-height:0/);
+  assert.match(css, /@media\(max-height:900px\)/);
 });
 
 test('home and feature pages use the same shared top navigation', () => {
