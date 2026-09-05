@@ -38,10 +38,27 @@ function MetricRing({label,target,index}:{label:string;target:number;index:numbe
 
 export default function SkillsPage(){
   const [score,setScore]=useState(0);
+  const [uploadProgress,setUploadProgress]=useState(0);
+
   useEffect(()=>{
     let n=0;
     const timer=setInterval(()=>{n+=1;setScore(Math.min(n,82));if(n>=82)clearInterval(timer)},18);
     return()=>clearInterval(timer);
+  },[]);
+
+  useEffect(()=>{
+    let raf=0;
+    const target=48;
+    const duration=1900;
+    const started=performance.now();
+    const animate=(now:number)=>{
+      const progress=Math.min(1,(now-started)/duration);
+      const eased=1-Math.pow(1-progress,3);
+      setUploadProgress(Math.round(target*eased));
+      if(progress<1) raf=requestAnimationFrame(animate);
+    };
+    raf=requestAnimationFrame(animate);
+    return()=>cancelAnimationFrame(raf);
   },[]);
 
   return <main className={styles.page}>
@@ -79,7 +96,15 @@ export default function SkillsPage(){
 
           <article className={`${styles.panel} ${styles.upload}`}>
             <div><h3>Analisar nova reunião</h3><p>Envie sua gravação e receba uma análise completa com insights de performance.</p></div>
-            <div className={styles.uploadRow}><div className={styles.progressTrack}><span/><b>Enviando...</b><i/></div><div className={styles.dropMark}>◌</div><div className={styles.dropCopy}>Ou arraste e solte<br/>o seu vídeo aqui<small>MP4, MOV ou WEBM</small></div></div>
+            <div className={styles.uploadRow}>
+              <div className={styles.progressTrack} aria-label={`Upload ${uploadProgress}%`}>
+                <span style={{width:`${uploadProgress}%`}}/>
+                <b>Enviando... {uploadProgress}%</b>
+                <i/>
+              </div>
+              <div className={styles.dropMark}>◌</div>
+              <div className={styles.dropCopy}>Ou arraste e solte<br/>o seu vídeo aqui<small>MP4, MOV ou WEBM</small></div>
+            </div>
           </article>
         </section>
 
