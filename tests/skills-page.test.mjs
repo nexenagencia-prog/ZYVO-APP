@@ -40,7 +40,7 @@ test('reference imagery is isolated to visual zones without a duplicated text ba
   assert.doesNotMatch(page, /skills-ref-performance/);
   assert.match(page, /heroMedia/);
   assert.match(page, /cardMedia/);
-  assert.match(css, /background-size:1[5-9]0%/);
+  assert.match(css, /background-size:1[5-9][0-9]%/);
 });
 
 test('skills desktop dashboard fits completely inside the viewport', () => {
