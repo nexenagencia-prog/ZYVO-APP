@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ChangeEvent, ReactNode, useEffect, useRef, useState } from 'react';
 
 const PROFILE_KEY = 'zyvo-profile';
+const PROFILE_EVENT = 'zyvo-profile-updated';
 const DEFAULT_NAME = 'Sandro Bello';
 
 function RailIcon({ children }: { children: ReactNode }) {
@@ -49,11 +50,13 @@ export default function Sidebar() {
   }, []);
 
   const persistProfile = (name: string, image: string) => {
+    const next = { name, image };
     try {
-      localStorage.setItem(PROFILE_KEY, JSON.stringify({ name, image }));
+      localStorage.setItem(PROFILE_KEY, JSON.stringify(next));
     } catch {
       // Ignore storage quota/private-mode failures and keep the in-memory edit.
     }
+    window.dispatchEvent(new CustomEvent(PROFILE_EVENT, { detail: next }));
   };
 
   const updateName = (value: string) => {
