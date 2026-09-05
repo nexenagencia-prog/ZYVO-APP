@@ -1,10 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { ReactNode, useEffect, useState } from 'react';
+import { ChangeEvent, ReactNode, useEffect, useRef, useState } from 'react';
+
+const PROFILE_KEY = 'zyvo-profile';
+const DEFAULT_NAME = 'Sandro Bello';
 
 function RailIcon({ children }: { children: ReactNode }) {
-  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.55" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
 }
 
 const items = [
@@ -20,6 +23,22 @@ const items = [
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
+  const [profileName, setProfileName] = useState(DEFAULT_NAME);
+  const [profileImage, setProfileImage] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(PROFILE_KEY);
+      if (stored) {
+        const profile = JSON.parse(stored) as { name?: string; image?: string };
+        if (profile.name) setProfileName(profile.name);
+        if (profile.image) setProfileImage(profile.image);
+      }
+    } catch {
+      // Keep the default profile if local storage is unavailable or malformed.
+    }
+  }, []);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -29,12 +48,45 @@ export default function Sidebar() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  const persistProfile = (name: string, image: string) => {
+    try {
+      localStorage.setItem(PROFILE_KEY, JSON.stringify({ name, image }));
+    } catch {
+      // Ignore storage quota/private-mode failures and keep the in-memory edit.
+    }
+  };
+
+  const updateName = (value: string) => {
+    setProfileName(value);
+    persistProfile(value || DEFAULT_NAME, profileImage);
+  };
+
+  const updatePhoto = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result !== 'string') return;
+      setProfileImage(reader.result);
+      persistProfile(profileName || DEFAULT_NAME, reader.result);
+    };
+    reader.readAsDataURL(file);
+    event.target.value = '';
+  };
+
+  const initials = (profileName || DEFAULT_NAME)
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join('');
+
   return <>
     <aside className="rail" aria-label="Navegação lateral">
-      <Link href="/configuracoes" className="rail-avatar" aria-label="Perfil">
-        <span className="avatar-monogram">SB</span>
+      <button className="rail-avatar" type="button" aria-label="Editar perfil" onClick={() => setOpen(true)}>
+        {profileImage ? <img src={profileImage} alt="Perfil" /> : <span className="avatar-monogram">{initials}</span>}
         <span className="status-dot" aria-hidden="true" />
-      </Link>
+      </button>
 
       <nav className="rail-nav">
         {items.slice(0, 6).map((item, index) => (
@@ -55,9 +107,35 @@ export default function Sidebar() {
     <div className={`sidebar-backdrop ${open ? 'is-open' : ''}`} onClick={() => setOpen(false)} aria-hidden="true" />
     <aside className={`sidebar-panel ${open ? 'is-open' : ''}`} aria-hidden={!open}>
       <div className="sidebar-panel-head">
-        <span>ZYVO</span>
-        <button type="button" onClick={() => setOpen(false)} aria-label="Fechar menu">×</button>
+        <span className="sidebar-wordmark">ZYVO</span>
+        <button className="sidebar-collapse" type="button" onClick={() => setOpen(false)} aria-label="Recolher menu">
+          <RailIcon><path d="m14 7-5 5 5 5"/></RailIcon>
+        </button>
       </div>
+
+      <div className="sidebar-profile">
+        <button className="profile-photo" type="button" onClick={() => fileInputRef.current?.click()} aria-label="Alterar foto do perfil">
+          {profileImage ? <img src={profileImage} alt="Perfil" /> : <span>{initials}</span>}
+          <span className="profile-photo-edit" aria-hidden="true">
+            <RailIcon><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></RailIcon>
+          </span>
+        </button>
+        <input ref={fileInputRef} className="profile-file" type="file" accept="image/*" onChange={updatePhoto} tabIndex={-1} />
+        <div className="profile-copy">
+          <input
+            className="profile-name"
+            value={profileName}
+            onChange={(event) => updateName(event.target.value)}
+            onBlur={() => {
+              if (!profileName.trim()) updateName(DEFAULT_NAME);
+            }}
+            aria-label="Nome do perfil"
+            maxLength={42}
+          />
+          <span>Marketing Digital</span>
+        </div>
+      </div>
+
       <nav>
         {items.map((item) => (
           <Link key={item.href} href={item.href} tabIndex={open ? 0 : -1} onClick={() => setOpen(false)}>
