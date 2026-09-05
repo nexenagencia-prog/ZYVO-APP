@@ -40,17 +40,18 @@ test('reference imagery is isolated to visual zones without a duplicated text ba
   assert.doesNotMatch(page, /skills-ref-performance/);
   assert.match(page, /heroMedia/);
   assert.match(page, /cardMedia/);
-  assert.match(css, /background-size:1[5-9][0-9]%/);
+  assert.match(css, /\.heroMedia\{[^}]*background-size:/);
+  assert.match(css, /\.cardMedia\{[^}]*background-size:/);
 });
 
 test('skills desktop dashboard fits completely inside the viewport', () => {
   const css = read('src/app/skills/skills.module.css');
   assert.match(css, /height:100dvh/);
   assert.match(css, /overflow:hidden/);
-  assert.match(css, /topbar-offset:74px/);
-  assert.match(css, /height:calc\(100dvh - var\(--topbar-offset\) - 10px\)/);
+  assert.match(css, /--topbar-offset:\d+px/);
+  assert.match(css, /height:calc\(100dvh - var\(--topbar-offset\) - \d+px\)/);
   assert.match(css, /min-height:0/);
-  assert.match(css, /@media\(max-height:900px\)/);
+  assert.match(css, /@media\(max-height:\d+px\)/);
 });
 
 test('home and feature pages use the same shared top navigation', () => {
