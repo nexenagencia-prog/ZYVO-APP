@@ -73,10 +73,13 @@ export default function Sidebar() {
 
   return <aside className={`rail ${styles.unifiedRail} ${open ? styles.expanded : ''}`} aria-label="Navegação lateral">
     <div className={styles.profileRow}>
-      <button className="rail-avatar" type="button" aria-label="Alterar foto do perfil" onClick={() => open ? fileInputRef.current?.click() : setOpen(true)}>
-        {profileImage ? <img src={profileImage} alt="Perfil" /> : <span className="avatar-monogram">{initials}</span>}
-        <span className="status-dot" aria-hidden="true" />
-      </button>
+      <div className={styles.profileVisual}>
+        <button className="rail-avatar" type="button" aria-label="Alterar foto do perfil" onClick={() => open ? fileInputRef.current?.click() : setOpen(true)}>
+          {profileImage ? <img src={profileImage} alt="Perfil" /> : <span className="avatar-monogram">{initials}</span>}
+          <span className="status-dot" aria-hidden="true" />
+        </button>
+        <div className={styles.performanceMiniTrack} aria-label="Performance 82 de 100"><span style={{width:'82%'}} /></div>
+      </div>
       <input ref={fileInputRef} className={styles.fileInput} type="file" accept="image/*" onChange={updatePhoto} tabIndex={-1} />
       <div className={styles.profileMeta} aria-hidden={!open}>
         <input className={styles.profileNameField} value={profileName} onChange={(event)=>updateName(event.target.value)} onBlur={()=>{if(!profileName.trim()) updateName(DEFAULT_NAME)}} aria-label="Nome do perfil" maxLength={42} tabIndex={open?0:-1}/>
