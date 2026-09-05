@@ -50,7 +50,7 @@ export default function HomePage() {
     return () => { window.removeEventListener(PROFILE_EVENT, onProfileUpdated); window.removeEventListener('storage', loadProfile); };
   }, []);
 
-  return <main className="home-shell">
+  return <main className="home-shell" style={{paddingTop:'104px'}}>
     <Sidebar />
     <div className="hero-visual" aria-hidden="true"><img src={hero4K} alt="" draggable={false} width={3840} height={2160} /></div>
     <div className={styles.nativeFaceScan} aria-hidden="true"><span className={styles.nativeLineGlow} /><span className={styles.nativeScanLine} /></div>

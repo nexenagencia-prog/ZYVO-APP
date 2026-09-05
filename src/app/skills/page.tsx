@@ -6,7 +6,6 @@ import Topbar from '@/components/Topbar';
 import heroRef from '@/lib/skills-ref-hero';
 import insightsRef from '@/lib/skills-ref-insights';
 import meetingRef from '@/lib/skills-ref-meeting';
-import analysisRef from '@/lib/skills-ref-analysis';
 import { fetchPublicCmsBundle, publicMediaUrl } from '@/lib/cms/client';
 import { DEFAULT_BUNDLE } from '@/lib/cms/defaults';
 import { sectionByKey } from '@/lib/cms/merge';
@@ -39,11 +38,11 @@ export default function SkillsPage(){
   const heroMedia=publicMediaUrl((hero.media as Record<string,unknown>|undefined)?.heroMedia,heroRef);
   const insightMedia=publicMediaUrl((insight.media as Record<string,unknown>|undefined)?.backgroundMedia,insightsRef);
   const meetingMedia=publicMediaUrl((meeting.media as Record<string,unknown>|undefined)?.backgroundMedia,meetingRef);
-  const analysisMedia=analysisRef;
+  const analysisMedia='/skills-analysis-full.webp';
   const displayedScore=Math.round(score*(targetScore/82));
   const captureTitle=(typeof analysisContent.captureTitle==='string'?analysisContent.captureTitle:FALLBACK_COPY.capture).replaceAll(' ','\n');
 
-  return <main className={styles.page} style={{paddingLeft:'94px','--header-height':'104px'} as React.CSSProperties}>
+  return <main className={styles.page} style={{paddingLeft:'94px',paddingTop:'104px','--header-height':'104px'} as React.CSSProperties}>
   <Sidebar />
   <Topbar />
   <section className={styles.board}>
@@ -53,6 +52,6 @@ export default function SkillsPage(){
 
     <div className={styles.sideCards}><article className={`${styles.card} ${styles.insightCard}`}><div className={`${styles.cardMedia} ${styles.insightMedia}`} style={{backgroundImage:`url(${insightMedia})`,backgroundPosition:'90% center'}}/><div className={styles.cardShade} style={{background:'linear-gradient(90deg,rgba(5,20,31,.99) 0%,rgba(5,20,31,.97) 48%,rgba(5,20,31,.72) 67%,rgba(5,20,31,.18) 86%,rgba(5,20,31,.04) 100%)'}}/><div className={styles.sideContent}><span className={styles.bookIcon}>▢</span><h3>{insight.title || FALLBACK_COPY.insightTitle}</h3><p>{insight.body || 'Artigos e guias sobre IA, comunicação e produtividade.'}</p><button>→</button></div></article><article className={`${styles.card} ${styles.meetingCard}`}><div className={`${styles.cardMedia} ${styles.meetingMedia}`} style={{backgroundImage:`url(${meetingMedia})`,backgroundPosition:'90% center'}}/><div className={styles.cardShade} style={{background:'linear-gradient(90deg,rgba(5,20,31,.99) 0%,rgba(5,20,31,.97) 48%,rgba(5,20,31,.72) 67%,rgba(5,20,31,.18) 86%,rgba(5,20,31,.04) 100%)'}}/><div className={styles.sideContent}><span className={styles.bookIcon}>▣</span><h3>{meeting.title || FALLBACK_COPY.meetingTitle}</h3><p>{meeting.body || 'Reviva conversas, identifique pontos-chave e gere insights.'}</p><button>→</button></div></article></div>
 
-    <article className={`${styles.card} ${styles.analysisCard}`} style={{backgroundImage:`linear-gradient(90deg,rgba(7,26,42,.97) 0%,rgba(7,26,42,.82) 34%,rgba(7,26,42,.34) 56%,rgba(7,26,42,.12) 76%,rgba(7,26,42,.28) 100%),url(${analysisMedia})`,backgroundSize:'cover',backgroundPosition:'center center',backgroundRepeat:'no-repeat'}}><div className={styles.analysisCopy} style={{position:'relative',zIndex:2}}><div className={styles.cameraIcon}>▣</div><div><h3>{analysis.title || FALLBACK_COPY.analysisTitle}</h3><p>{analysis.body || 'Envie sua gravação e receba uma análise completa com insights de performance.'}</p><button><b>↥</b>{typeof analysisContent.buttonLabel==='string'?analysisContent.buttonLabel:'Selecionar arquivo'}</button><small>{typeof analysisContent.fileHint==='string'?analysisContent.fileHint:'MP4, MOV ou WEBM'}</small></div></div><div/><div className={styles.capture}><p>{captureTitle.split('\n').map((line,index)=><span key={`${line}-${index}`}>{line}{index<captureTitle.split('\n').length-1?<br/>:null}</span>)}</p><i/><span>{typeof analysisContent.captureBody==='string'?analysisContent.captureBody:'Do seu smartphone para insights reais.'}</span></div></article>
+    <article className={`${styles.card} ${styles.analysisCard}`} style={{backgroundImage:`linear-gradient(90deg,rgba(3,10,17,.92) 0%,rgba(3,10,17,.72) 31%,rgba(3,10,17,.18) 52%,rgba(3,10,17,.02) 72%,rgba(3,10,17,.03) 100%),url(${analysisMedia})`,backgroundSize:'cover',backgroundPosition:'center center',backgroundRepeat:'no-repeat'}}><div className={styles.analysisCopy} style={{position:'relative',zIndex:2}}><div className={styles.cameraIcon}>▣</div><div><h3>{analysis.title || FALLBACK_COPY.analysisTitle}</h3><p>{analysis.body || 'Envie sua gravação e receba uma análise completa com insights de performance.'}</p><button><b>↥</b>{typeof analysisContent.buttonLabel==='string'?analysisContent.buttonLabel:'Selecionar arquivo'}</button><small>{typeof analysisContent.fileHint==='string'?analysisContent.fileHint:'MP4, MOV ou WEBM'}</small></div></div><div/><div className={styles.capture}><p>{captureTitle.split('\n').map((line,index)=><span key={`${line}-${index}`}>{line}{index<captureTitle.split('\n').length-1?<br/>:null}</span>)}</p><i/><span>{typeof analysisContent.captureBody==='string'?analysisContent.captureBody:'Do seu smartphone para insights reais.'}</span></div></article>
   </section>
 </main>}

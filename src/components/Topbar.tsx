@@ -19,7 +19,7 @@ export default function Topbar() {
   };
   const active = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
 
-  return <header className="topbar">
+  return <header className="topbar" style={{position:'fixed',top:0,left:0,right:0}}>
     <Link href="/" className="wordmark" aria-label="ZYVO início">ZYVO</Link>
     <form className="search-box" onSubmit={submit}>
       <Icon><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></Icon>
