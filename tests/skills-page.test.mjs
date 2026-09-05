@@ -30,10 +30,22 @@ test('skills uses the approved editorial card structure', () => {
   assert.match(page, /EVOLUA/);
 });
 
-test('skills desktop dashboard fits the viewport without vertical scrolling', () => {
+test('skills uses imagery extracted from the approved reference in every visual card', () => {
+  const page = read('src/app/skills/page.tsx');
+  assert.match(page, /skills-ref-hero/);
+  assert.match(page, /skills-ref-performance/);
+  assert.match(page, /skills-ref-insights/);
+  assert.match(page, /skills-ref-meeting/);
+  assert.match(page, /skills-ref-analysis/);
+  assert.match(page, /backgroundImage/);
+});
+
+test('skills desktop dashboard fits completely inside the viewport', () => {
   const css = read('src/app/skills/skills.module.css');
   assert.match(css, /height:100dvh/);
   assert.match(css, /overflow:hidden/);
+  assert.match(css, /topbar-offset:82px/);
+  assert.match(css, /height:calc\(100dvh - var\(--topbar-offset\) - 16px\)/);
   assert.match(css, /grid-template-columns:minmax\(0,1\.02fr\) minmax\(0,\.79fr\) minmax\(260px,\.61fr\)/);
 });
 
