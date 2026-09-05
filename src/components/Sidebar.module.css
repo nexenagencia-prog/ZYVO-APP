@@ -1,0 +1,168 @@
+.unifiedRail{
+  width:72px;
+  align-items:stretch;
+  overflow:hidden;
+  transition:width .34s cubic-bezier(.22,.75,.2,1),background-color .28s ease,box-shadow .28s ease;
+}
+
+.expanded{
+  width:248px;
+  background:rgba(3,13,23,.965);
+  box-shadow:18px 0 54px rgba(0,0,0,.28);
+}
+
+.profileRow{
+  display:flex;
+  align-items:center;
+  min-height:48px;
+  padding:0 14px;
+  gap:12px;
+}
+
+.profileMeta{
+  min-width:0;
+  width:0;
+  opacity:0;
+  transform:translateX(-8px);
+  pointer-events:none;
+  transition:opacity .2s ease .02s,transform .28s ease,width .28s ease;
+}
+
+.expanded .profileMeta{
+  width:154px;
+  opacity:1;
+  transform:translateX(0);
+  pointer-events:auto;
+}
+
+.profileNameField{
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:#f4f7fa;
+  font-size:13px;
+  font-weight:420;
+  letter-spacing:-.01em;
+  padding:0;
+}
+
+.profileRole{
+  display:block;
+  margin-top:3px;
+  color:rgba(226,236,244,.42);
+  font-size:10px;
+  font-weight:400;
+}
+
+.fileInput{
+  position:absolute;
+  width:1px;
+  height:1px;
+  opacity:0;
+  pointer-events:none;
+}
+
+.nav{
+  margin-top:30px;
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.navItem{
+  position:relative;
+  height:46px;
+  display:flex;
+  align-items:center;
+  color:rgba(229,238,246,.66);
+  border-radius:13px;
+  margin:0 13px;
+  overflow:hidden;
+  transition:background-color .18s ease,color .18s ease;
+}
+
+.navItem:hover{
+  color:#fff;
+  background:rgba(255,255,255,.045);
+}
+
+.selected{
+  color:#fff;
+  background:rgba(133,176,214,.11);
+  box-shadow:inset 0 0 0 1px rgba(160,196,226,.10);
+}
+
+.itemIcon{
+  width:46px;
+  min-width:46px;
+  height:46px;
+  display:grid;
+  place-items:center;
+}
+
+.itemIcon svg{
+  width:21px;
+  height:21px;
+  display:block;
+}
+
+.itemLabel{
+  white-space:nowrap;
+  opacity:0;
+  transform:translateX(-7px);
+  font-size:12.5px;
+  font-weight:390;
+  letter-spacing:-.008em;
+  transition:opacity .2s ease,transform .28s cubic-bezier(.22,.75,.2,1);
+}
+
+.expanded .itemLabel{
+  opacity:1;
+  transform:translateX(0);
+}
+
+.bottomControl{
+  margin-top:auto;
+  height:44px;
+  display:flex;
+  align-items:center;
+  padding:0 14px;
+}
+
+.toggleButton{
+  width:44px;
+  height:44px;
+  border:0;
+  border-radius:13px;
+  background:transparent;
+  color:rgba(216,227,236,.84);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  transition:background-color .18s ease,color .18s ease,transform .28s ease;
+}
+
+.toggleButton:hover{
+  background:rgba(255,255,255,.045);
+  color:#fff;
+}
+
+.toggleButton svg{
+  width:18px;
+  height:18px;
+  transition:transform .3s cubic-bezier(.22,.75,.2,1);
+}
+
+.expanded .toggleButton svg{
+  transform:rotate(180deg);
+}
+
+@media(max-width:620px){
+  .expanded{width:min(248px,82vw)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .unifiedRail,.profileMeta,.itemLabel,.toggleButton svg{transition:none}
+}
