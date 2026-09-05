@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { FormEvent, ReactNode, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
-import { heroDataUri } from '@/lib/heroData';
 
 function Icon({ children, size = 20 }: { children: ReactNode; size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
@@ -32,7 +31,12 @@ export default function HomePage() {
       <Sidebar />
 
       <div className="hero-visual" aria-hidden="true">
-        <img src={heroDataUri} alt="" draggable={false} />
+        <img
+          src="/zyvo-hero-reference.webp"
+          alt=""
+          draggable={false}
+          style={{position:'absolute',height:'112%',width:'auto',maxWidth:'none',right:'-80px',top:'-105px',objectFit:'fill',objectPosition:'center'}}
+        />
       </div>
       <div className="hero-veil" aria-hidden="true" />
 
@@ -91,13 +95,6 @@ export default function HomePage() {
 
         <p className="motto">CONECTE · EVOLUA · REALIZE MAIS</p>
       </section>
-
-      <aside className="right-tagline" aria-label="Inteligência para pessoas reais">
-        <span>INTELIGÊNCIA</span>
-        <span>PARA PESSOAS</span>
-        <span>REAIS</span>
-        <i />
-      </aside>
     </main>
   );
 }
