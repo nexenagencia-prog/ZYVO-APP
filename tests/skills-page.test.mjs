@@ -15,16 +15,10 @@ test('skills uses the approved editorial card structure', () => {
   assert.match(page, /PERFORMANCE HUMANA/); assert.match(page, /INSIGHTS REAIS/); assert.match(page, /Insights e Conteúdo/); assert.match(page, /Analisar Reuniões/); assert.match(page, /Analise suas reuniões/); assert.match(page, /CAPTURE/); assert.match(page, /ANALISE/); assert.match(page, /EVOLUA/);
 });
 
-test('uses the four user supplied high resolution artworks in their correct cards', () => {
+test('reference imagery is isolated to visual zones without a duplicated text backdrop', () => {
   const page = read('src/app/skills/page.tsx');
-  assert.match(page, /skillAssetHero/);
-  assert.match(page, /skillAssetPhone/);
-  assert.match(page, /skillAssetInsights/);
-  assert.match(page, /skillAssetMeeting/);
-  assert.match(page, /heroMedia/);
-  assert.match(page, /insightMedia/);
-  assert.match(page, /meetingMedia/);
-  assert.match(page, /analysisMedia/);
+  const css = read('src/app/skills/skills.module.css');
+  assert.match(page, /skills-ref-hero/); assert.match(page, /skills-ref-insights/); assert.match(page, /skills-ref-meeting/); assert.match(page, /skills-ref-analysis/); assert.doesNotMatch(page, /skills-ref-performance/); assert.match(page, /heroMedia/); assert.match(page, /cardMedia/); assert.match(css, /\.heroMedia\{[^}]*background-size:cover/); assert.match(css, /\.cardMedia\{[^}]*background-size:cover/); assert.match(css, /\.heroMedia\{[^}]*filter:none/); assert.match(css, /\.cardMedia\{[^}]*filter:none/);
 });
 
 test('skills desktop dashboard fits completely inside the viewport', () => {
@@ -33,8 +27,7 @@ test('skills desktop dashboard fits completely inside the viewport', () => {
 });
 
 test('home and feature pages use the same shared top navigation', () => {
-  const topbar=read('src/components/Topbar.tsx'),home=read('src/app/page.tsx'),feature=read('src/app/[...slug]/page.tsx'),skills=read('src/app/skills/page.tsx');
-  assert.match(topbar,/Início/); assert.match(topbar,/Skills/); assert.match(topbar,/Agenda/); assert.match(topbar,/Planos e preços/); assert.match(home,/<Topbar/); assert.match(feature,/<Topbar/); assert.match(skills,/<Topbar/);
+  const topbar=read('src/components/Topbar.tsx'),home=read('src/app/page.tsx'),feature=read('src/app/[...slug]/page.tsx'),skills=read('src/app/skills/page.tsx'); assert.match(topbar,/Início/); assert.match(topbar,/Skills/); assert.match(topbar,/Agenda/); assert.match(topbar,/Planos e preços/); assert.match(home,/<Topbar/); assert.match(feature,/<Topbar/); assert.match(skills,/<Topbar/);
 });
 
 test('sidebar highlights the current route instead of always highlighting home',()=>{const sidebar=read('src/components/Sidebar.tsx');assert.match(sidebar,/usePathname/);assert.match(sidebar,/pathname/);assert.doesNotMatch(sidebar,/index === 0 \? styles\.selected/)});
