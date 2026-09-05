@@ -8,31 +8,33 @@ test('skills page is a dedicated performance dashboard with animated metric ring
   const page = read('src/app/skills/page.tsx');
   const css = read('src/app/skills/skills.module.css');
   assert.match(page, /Seu desempenho/);
-  assert.match(page, /Reuniões analisadas/);
   assert.match(page, /Comunicação/);
   assert.match(page, /Clareza/);
   assert.match(page, /Escuta/);
   assert.match(page, /Objetividade/);
   assert.match(page, /Perguntas/);
-  assert.match(page, /Argumentação/);
   assert.match(page, /Condução/);
   assert.match(page, /requestAnimationFrame|setInterval|setTimeout/);
   assert.match(css, /conic-gradient|stroke-dashoffset/);
+});
+
+test('skills uses the approved editorial card structure', () => {
+  const page = read('src/app/skills/page.tsx');
+  assert.match(page, /PERFORMANCE HUMANA/);
+  assert.match(page, /INSIGHTS REAIS/);
+  assert.match(page, /Insights e Conteúdo/);
+  assert.match(page, /Analisar Reuniões/);
+  assert.match(page, /Analise suas reuniões/);
+  assert.match(page, /CAPTURE/);
+  assert.match(page, /ANALISE/);
+  assert.match(page, /EVOLUA/);
 });
 
 test('skills desktop dashboard fits the viewport without vertical scrolling', () => {
   const css = read('src/app/skills/skills.module.css');
   assert.match(css, /height:100dvh/);
   assert.match(css, /overflow:hidden/);
-  assert.match(css, /max-height:calc\(100dvh/);
-});
-
-test('meeting analysis progress animates from empty to the current loaded point', () => {
-  const page = read('src/app/skills/page.tsx');
-  assert.match(page, /uploadProgress/);
-  assert.match(page, /setUploadProgress/);
-  assert.match(page, /requestAnimationFrame/);
-  assert.match(page, /width:`\$\{uploadProgress\}%`/);
+  assert.match(css, /grid-template-columns:minmax\(0,1\.02fr\) minmax\(0,\.79fr\) minmax\(260px,\.61fr\)/);
 });
 
 test('home and feature pages use the same shared top navigation', () => {
