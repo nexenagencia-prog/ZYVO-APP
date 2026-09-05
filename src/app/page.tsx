@@ -38,14 +38,14 @@ export default function HomePage() {
     <main className="home-shell">
       <Sidebar />
 
-      <div className="hero-visual" aria-hidden="true">
+      <div className="hero-visual" aria-hidden="true" style={{left:0,right:0,width:'100%',height:'100%'}}>
         <img
           src={hero4K}
           alt=""
           draggable={false}
           width={3840}
           height={2160}
-          style={{position:'absolute',inset:0,width:'100%',height:'100%',maxWidth:'none',objectFit:'cover',objectPosition:'center'}}
+          style={{position:'absolute',inset:0,width:'100%',height:'100%',maxWidth:'none',objectFit:'cover',objectPosition:'center',filter:'none'}}
         />
       </div>
       <div className="hero-veil" aria-hidden="true" />
