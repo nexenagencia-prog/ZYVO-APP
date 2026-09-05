@@ -33,3 +33,10 @@ test('home and feature pages use the same shared top navigation', () => {
   assert.match(feature, /<Topbar/);
   assert.match(skills, /<Topbar/);
 });
+
+test('sidebar highlights the current route instead of always highlighting home', () => {
+  const sidebar = read('src/components/Sidebar.tsx');
+  assert.match(sidebar, /usePathname/);
+  assert.match(sidebar, /pathname/);
+  assert.doesNotMatch(sidebar, /index === 0 \? styles\.selected/);
+});
