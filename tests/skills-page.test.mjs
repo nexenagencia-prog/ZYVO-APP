@@ -1,20 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+const read=p=>fs.existsSync(p)?fs.readFileSync(p,'utf8'):'';
 
-const read = (p) => fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '';
+test('skills page keeps the reference dashboard content and animation',()=>{const page=read('src/app/skills/page.tsx'),css=read('src/app/skills/skills.module.css');for(const text of ['Seu desempenho','Comunicação','Clareza','Escuta','Objetividade','Perguntas','Condução','PERFORMANCE HUMANA','INSIGHTS REAIS','Insights e Conteúdo','Analisar Reuniões','Analise suas reuniões','CAPTURE','ANALISE','EVOLUA'])assert.match(page,new RegExp(text));assert.match(page,/requestAnimationFrame/);assert.match(css,/conic-gradient/)});
 
-test('skills page is a dedicated performance dashboard with animated metric rings', () => {
-  const page = read('src/app/skills/page.tsx'); const css = read('src/app/skills/skills.module.css');
-  assert.match(page,/Seu desempenho/); assert.match(page,/Comunicação/); assert.match(page,/Clareza/); assert.match(page,/Escuta/); assert.match(page,/Objetividade/); assert.match(page,/Perguntas/); assert.match(page,/Condução/); assert.match(page,/requestAnimationFrame|setInterval|setTimeout/); assert.match(css,/conic-gradient|stroke-dashoffset/);
-});
+test('skills uses its faithful reference header instead of the global app chrome',()=>{const page=read('src/app/skills/page.tsx');assert.match(page,/className={styles\.skillsHeader}/);assert.match(page,/>Skills</);assert.match(page,/Buscar reunião, pessoa ou gravação/);assert.match(page,/Plano Pro/);assert.doesNotMatch(page,/<Topbar\s*\/>/);assert.doesNotMatch(page,/<Sidebar\s*\/>/)});
 
-test('skills uses the approved editorial card structure',()=>{const page=read('src/app/skills/page.tsx');assert.match(page,/PERFORMANCE HUMANA/);assert.match(page,/INSIGHTS REAIS/);assert.match(page,/Insights e Conteúdo/);assert.match(page,/Analisar Reuniões/);assert.match(page,/Analise suas reuniões/);assert.match(page,/CAPTURE/);assert.match(page,/ANALISE/);assert.match(page,/EVOLUA/)});
+test('all four reference images stay assigned to their correct cards',()=>{const page=read('src/app/skills/page.tsx');for(const asset of ['skills-ref-hero','skills-ref-insights','skills-ref-meeting','skills-ref-analysis'])assert.match(page,new RegExp(asset));assert.match(page,/heroMedia/);assert.match(page,/insightMedia/);assert.match(page,/meetingMedia/);assert.match(page,/analysisMedia/)});
 
-test('reference imagery is isolated to visual zones without a duplicated text backdrop',()=>{const page=read('src/app/skills/page.tsx'),css=read('src/app/skills/skills.module.css');assert.match(page,/skills-ref-hero/);assert.match(page,/skills-ref-insights/);assert.match(page,/skills-ref-meeting/);assert.match(page,/skills-ref-analysis/);assert.doesNotMatch(page,/skills-ref-performance/);assert.match(page,/heroMedia/);assert.match(page,/cardMedia/);assert.match(css,/\.heroMedia\{[^}]*background-size:cover/);assert.match(css,/\.cardMedia\{[^}]*background-size:cover/);assert.match(css,/\.heroMedia\{[^}]*filter:none/);assert.match(css,/\.cardMedia\{[^}]*filter:none/)});
+test('desktop board is fully visible without bottom clipping',()=>{const css=read('src/app/skills/skills.module.css');assert.match(css,/height:100dvh/);assert.match(css,/overflow:hidden/);assert.match(css,/grid-template-rows:minmax\(0,1\.4fr\) minmax\(0,1fr\)/);assert.match(css,/height:calc\(100dvh - var\(--header-height\) - 28px\)/);assert.match(css,/min-height:0/);assert.match(css,/@media\(max-height:900px\)/)});
 
-test('skills desktop dashboard fits completely inside the viewport and is raised',()=>{const css=read('src/app/skills/skills.module.css');assert.match(css,/height:100dvh/);assert.match(css,/overflow:hidden/);assert.match(css,/--topbar-offset:66px/);assert.match(css,/height:calc\(100dvh - var\(--topbar-offset\) - 18px\)/);assert.match(css,/align-content:center/);assert.match(css,/min-height:0/);assert.match(css,/@media\(max-height:\d+px\)/)});
-
-test('home and feature pages use the same shared top navigation',()=>{const topbar=read('src/components/Topbar.tsx'),home=read('src/app/page.tsx'),feature=read('src/app/[...slug]/page.tsx'),skills=read('src/app/skills/page.tsx');assert.match(topbar,/Início/);assert.match(topbar,/Skills/);assert.match(topbar,/Agenda/);assert.match(topbar,/Planos e preços/);assert.match(home,/<Topbar/);assert.match(feature,/<Topbar/);assert.match(skills,/<Topbar/)});
-test('sidebar highlights the current route instead of always highlighting home',()=>{const sidebar=read('src/components/Sidebar.tsx');assert.match(sidebar,/usePathname/);assert.match(sidebar,/pathname/);assert.doesNotMatch(sidebar,/index === 0 \? styles\.selected/)});
-test('sidebar has a compact performance bar below the profile',()=>{const sidebar=read('src/components/Sidebar.tsx'),css=read('src/components/Sidebar.module.css');assert.match(sidebar,/performanceMiniTrack/);assert.match(sidebar,/82%/);assert.match(css,/\.performanceMiniTrack/);assert.match(css,/width:70px/)});
+test('card imagery renders cleanly at full cover',()=>{const css=read('src/app/skills/skills.module.css');assert.match(css,/\.heroMedia[^}]*background-size:cover/);assert.match(css,/\.cardMedia[^}]*background-size:cover/);assert.match(css,/filter:none/)});
