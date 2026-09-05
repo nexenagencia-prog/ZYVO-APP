@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ChangeEvent, ReactNode, useEffect, useRef, useState } from 'react';
+import styles from './Sidebar.module.css';
 
 const PROFILE_KEY = 'zyvo-profile';
 const PROFILE_EVENT = 'zyvo-profile-updated';
@@ -54,7 +55,7 @@ export default function Sidebar() {
     try {
       localStorage.setItem(PROFILE_KEY, JSON.stringify(next));
     } catch {
-      // Ignore storage quota/private-mode failures and keep the in-memory edit.
+      // Ignore storage failures and keep the in-memory edit.
     }
     window.dispatchEvent(new CustomEvent(PROFILE_EVENT, { detail: next }));
   };
@@ -84,49 +85,22 @@ export default function Sidebar() {
     .map((part) => part[0]?.toUpperCase())
     .join('');
 
-  return <>
-    <aside className="rail" aria-label="Navegação lateral">
-      <button className="rail-avatar" type="button" aria-label="Editar perfil" onClick={() => setOpen(true)}>
-        {profileImage ? <img src={profileImage} alt="Perfil" /> : <span className="avatar-monogram">{initials}</span>}
-        <span className="status-dot" aria-hidden="true" />
-      </button>
-
-      <nav className="rail-nav">
-        {items.slice(0, 6).map((item, index) => (
-          <Link key={item.href} href={item.href} className={index === 0 ? 'selected' : ''} aria-label={item.label} title={item.label}>
-            <RailIcon>{item.icon}</RailIcon>
-          </Link>
-        ))}
-        <Link href="/notificacoes" aria-label="Notificações" title="Notificações">
-          <RailIcon>{items[6].icon}</RailIcon>
-        </Link>
-      </nav>
-
-      <button className="rail-menu" type="button" onClick={() => setOpen((value) => !value)} aria-label={open ? 'Recolher menu' : 'Expandir menu'} aria-expanded={open}>
-        <span/><span/><span/>
-      </button>
-    </aside>
-
-    <div className={`sidebar-backdrop ${open ? 'is-open' : ''}`} onClick={() => setOpen(false)} aria-hidden="true" />
-    <aside className={`sidebar-panel ${open ? 'is-open' : ''}`} aria-hidden={!open}>
-      <div className="sidebar-panel-head">
-        <span className="sidebar-wordmark">ZYVO</span>
-        <button className="sidebar-collapse" type="button" onClick={() => setOpen(false)} aria-label="Recolher menu">
-          <RailIcon><path d="m14 7-5 5 5 5"/></RailIcon>
+  return (
+    <aside className={`rail ${styles.unifiedRail} ${open ? styles.expanded : ''}`} aria-label="Navegação lateral">
+      <div className={styles.profileRow}>
+        <button
+          className="rail-avatar"
+          type="button"
+          aria-label="Alterar foto do perfil"
+          onClick={() => open ? fileInputRef.current?.click() : setOpen(true)}
+        >
+          {profileImage ? <img src={profileImage} alt="Perfil" /> : <span className="avatar-monogram">{initials}</span>}
+          <span className="status-dot" aria-hidden="true" />
         </button>
-      </div>
-
-      <div className="sidebar-profile">
-        <button className="profile-photo" type="button" onClick={() => fileInputRef.current?.click()} aria-label="Alterar foto do perfil">
-          {profileImage ? <img src={profileImage} alt="Perfil" /> : <span>{initials}</span>}
-          <span className="profile-photo-edit" aria-hidden="true">
-            <RailIcon><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></RailIcon>
-          </span>
-        </button>
-        <input ref={fileInputRef} className="profile-file" type="file" accept="image/*" onChange={updatePhoto} tabIndex={-1} />
-        <div className="profile-copy">
+        <input ref={fileInputRef} className={styles.fileInput} type="file" accept="image/*" onChange={updatePhoto} tabIndex={-1} />
+        <div className={styles.profileMeta} aria-hidden={!open}>
           <input
-            className="profile-name"
+            className={styles.profileNameField}
             value={profileName}
             onChange={(event) => updateName(event.target.value)}
             onBlur={() => {
@@ -134,19 +108,38 @@ export default function Sidebar() {
             }}
             aria-label="Nome do perfil"
             maxLength={42}
+            tabIndex={open ? 0 : -1}
           />
-          <span>Marketing Digital</span>
+          <span className={styles.profileRole}>Marketing Digital</span>
         </div>
       </div>
 
-      <nav>
-        {items.map((item) => (
-          <Link key={item.href} href={item.href} tabIndex={open ? 0 : -1} onClick={() => setOpen(false)}>
-            <span className="panel-icon"><RailIcon>{item.icon}</RailIcon></span>
-            <span>{item.label}</span>
+      <nav className={styles.nav} aria-label="Menu principal">
+        {items.map((item, index) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className={`${styles.navItem} ${index === 0 ? styles.selected : ''}`}
+            aria-label={item.label}
+            title={open ? undefined : item.label}
+          >
+            <span className={styles.itemIcon}><RailIcon>{item.icon}</RailIcon></span>
+            <span className={styles.itemLabel}>{item.label}</span>
           </Link>
         ))}
       </nav>
+
+      <div className={styles.bottomControl}>
+        <button
+          className={styles.toggleButton}
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          aria-label={open ? 'Recolher menu' : 'Expandir menu'}
+          aria-expanded={open}
+        >
+          <RailIcon><path d="m9 7 5 5-5 5"/></RailIcon>
+        </button>
+      </div>
     </aside>
-  </>;
+  );
 }
