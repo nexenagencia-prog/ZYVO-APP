@@ -104,7 +104,7 @@ export default function HomePage() {
       </header>
 
       <section className="hero-copy" aria-labelledby="home-title">
-        <p className="greeting">Olá, bem-vindo, <strong>{profileName}</strong>.</p>
+        <p className="greeting">Olá, <strong>{profileName}</strong></p>
         <p className="eyebrow">TECNOLOGIA QUE TRANSFORMA</p>
         <h1 id="home-title">Reuniões com<br/><span>Performance Pro</span></h1>
         <p className="lead">Ferramentas inteligentes para reuniões mais produtivas, análises precisas e resultados que fazem a diferença.</p>
