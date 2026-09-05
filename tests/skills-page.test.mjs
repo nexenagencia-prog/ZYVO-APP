@@ -20,6 +20,21 @@ test('skills page is a dedicated performance dashboard with animated metric ring
   assert.match(css, /conic-gradient|stroke-dashoffset/);
 });
 
+test('skills desktop dashboard fits the viewport without vertical scrolling', () => {
+  const css = read('src/app/skills/skills.module.css');
+  assert.match(css, /height:100dvh/);
+  assert.match(css, /overflow:hidden/);
+  assert.match(css, /max-height:calc\(100dvh/);
+});
+
+test('meeting analysis progress animates from empty to the current loaded point', () => {
+  const page = read('src/app/skills/page.tsx');
+  assert.match(page, /uploadProgress/);
+  assert.match(page, /setUploadProgress/);
+  assert.match(page, /requestAnimationFrame/);
+  assert.match(page, /width:`\$\{uploadProgress\}%`/);
+});
+
 test('home and feature pages use the same shared top navigation', () => {
   const topbar = read('src/components/Topbar.tsx');
   const home = read('src/app/page.tsx');
@@ -39,4 +54,13 @@ test('sidebar highlights the current route instead of always highlighting home',
   assert.match(sidebar, /usePathname/);
   assert.match(sidebar, /pathname/);
   assert.doesNotMatch(sidebar, /index === 0 \? styles\.selected/);
+});
+
+test('sidebar has a compact performance bar below the profile', () => {
+  const sidebar = read('src/components/Sidebar.tsx');
+  const css = read('src/components/Sidebar.module.css');
+  assert.match(sidebar, /performanceMiniTrack/);
+  assert.match(sidebar, /82%/);
+  assert.match(css, /\.performanceMiniTrack/);
+  assert.match(css, /width:70px/);
 });
