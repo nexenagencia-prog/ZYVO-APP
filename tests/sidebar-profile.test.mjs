@@ -21,7 +21,7 @@ test('sidebar is one rail that expands in place instead of opening a second pane
   assert.doesNotMatch(sidebar, /sidebar-panel/);
   assert.doesNotMatch(sidebar, /sidebar-backdrop/);
   assert.match(sidebarCss, /transition:\s*width/);
-  assert.match(sidebarCss, /width:\s*248px/);
+  assert.match(sidebarCss, /\.expanded\{[\s\S]*?width:\s*222px/);
 });
 
 test('sidebar keeps icons anchored while labels reveal smoothly', () => {
