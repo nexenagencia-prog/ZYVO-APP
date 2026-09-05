@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
 import heroRef from '@/lib/skills-ref-hero';
-import performanceRef from '@/lib/skills-ref-performance';
 import insightsRef from '@/lib/skills-ref-insights';
 import meetingRef from '@/lib/skills-ref-meeting';
 import analysisRef from '@/lib/skills-ref-analysis';
@@ -29,13 +28,14 @@ export default function SkillsPage(){
   return <main className={styles.page}>
     <Sidebar/><Topbar/>
     <section className={styles.board}>
-      <article className={`${styles.card} ${styles.heroCard}`} style={{backgroundImage:`linear-gradient(90deg,rgba(5,20,33,.98) 0%,rgba(5,20,33,.78) 42%,rgba(5,20,33,.14) 100%),url(${heroRef})`}}>
+      <article className={`${styles.card} ${styles.heroCard}`}>
+        <div className={styles.heroMedia} style={{backgroundImage:`url(${heroRef})`}} aria-hidden="true"/>
+        <div className={styles.heroShade} aria-hidden="true"/>
         <div className={styles.heroTop}><p>PERFORMANCE HUMANA</p><h1>Skills</h1><h2>Inteligência que transforma<br/>suas reuniões em resultados.</h2></div>
         <div className={styles.heroBottom}><i/><p>INSIGHTS REAIS</p><strong>Mais que reuniões.<br/>Evolução.</strong><button><span>▷</span> Explorar agora</button></div>
       </article>
 
       <article className={`${styles.card} ${styles.performanceCard}`}>
-        <div className={styles.performanceBackdrop} style={{backgroundImage:`url(${performanceRef})`}} aria-hidden="true"/>
         <div className={styles.performanceContent}>
           <header><h3>Seu desempenho</h3><button>Analisar performance <b>›</b></button></header>
           <div className={styles.performanceMain}>
@@ -47,13 +47,21 @@ export default function SkillsPage(){
       </article>
 
       <div className={styles.sideCards}>
-        <article className={`${styles.card} ${styles.insightCard}`} style={{backgroundImage:`linear-gradient(90deg,rgba(5,19,31,.98) 0%,rgba(5,19,31,.76) 56%,rgba(5,19,31,.08) 100%),url(${insightsRef})`}}><span className={styles.icon}>▢</span><h3>Insights e Conteúdo</h3><p>Artigos e guias sobre IA,<br/>comunicação e produtividade.</p><button>→</button></article>
-        <article className={`${styles.card} ${styles.meetingCard}`} style={{backgroundImage:`linear-gradient(90deg,rgba(5,19,31,.98) 0%,rgba(5,19,31,.72) 55%,rgba(5,19,31,.06) 100%),url(${meetingRef})`}}><span className={styles.icon}>▣</span><h3>Analisar Reuniões</h3><p>Reviva conversas, identifique<br/>pontos-chave e gere insights.</p><button>→</button></article>
+        <article className={`${styles.card} ${styles.insightCard}`}>
+          <div className={`${styles.cardMedia} ${styles.insightMedia}`} style={{backgroundImage:`url(${insightsRef})`}} aria-hidden="true"/>
+          <div className={styles.cardShade} aria-hidden="true"/>
+          <div className={styles.sideContent}><span className={styles.icon}>▢</span><h3>Insights e Conteúdo</h3><p>Artigos e guias sobre IA,<br/>comunicação e produtividade.</p><button>→</button></div>
+        </article>
+        <article className={`${styles.card} ${styles.meetingCard}`}>
+          <div className={`${styles.cardMedia} ${styles.meetingMedia}`} style={{backgroundImage:`url(${meetingRef})`}} aria-hidden="true"/>
+          <div className={styles.cardShade} aria-hidden="true"/>
+          <div className={styles.sideContent}><span className={styles.icon}>▣</span><h3>Analisar Reuniões</h3><p>Reviva conversas, identifique<br/>pontos-chave e gere insights.</p><button>→</button></div>
+        </article>
       </div>
 
       <article className={`${styles.card} ${styles.analysisCard}`}>
         <div className={styles.analysisCopy}><div className={styles.cameraIcon}>▣</div><div><h3>Analise suas reuniões</h3><p>Envie sua gravação e receba uma<br/>análise completa com insights<br/>de performance.</p><button><b>↥</b> Selecionar arquivo</button><small>MP4, MOV ou WEBM</small></div></div>
-        <div className={styles.analysisMedia} style={{backgroundImage:`url(${analysisRef})`}} aria-hidden="true"/>
+        <div className={`${styles.cardMedia} ${styles.analysisMedia}`} style={{backgroundImage:`url(${analysisRef})`}} aria-hidden="true"/>
         <div className={styles.capture}><p>CAPTURE.<br/>ANALISE.<br/>EVOLUA.</p><i/><span>Do seu smartphone<br/>para insights reais.</span></div>
       </article>
     </section>
