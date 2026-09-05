@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 const sidebar = readFileSync(new URL('../src/components/Sidebar.tsx', import.meta.url), 'utf8');
+const sidebarCss = readFileSync(new URL('../src/components/Sidebar.module.css', import.meta.url), 'utf8');
 const page = readFileSync(new URL('../src/app/page.tsx', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../src/app/globals.css', import.meta.url), 'utf8');
 const scanCss = readFileSync(new URL('../src/app/faceScan.module.css', import.meta.url), 'utf8');
@@ -14,26 +15,38 @@ test('sidebar exposes editable profile name and image with persistence', () => {
   assert.match(sidebar, /profileName/);
 });
 
+test('sidebar is one rail that expands in place instead of opening a second panel', () => {
+  assert.match(sidebar, /styles\.unifiedRail/);
+  assert.match(sidebar, /styles\.expanded/);
+  assert.doesNotMatch(sidebar, /sidebar-panel/);
+  assert.doesNotMatch(sidebar, /sidebar-backdrop/);
+  assert.match(sidebarCss, /transition:\s*width/);
+  assert.match(sidebarCss, /width:\s*248px/);
+});
+
+test('sidebar keeps icons anchored while labels reveal smoothly', () => {
+  assert.match(sidebarCss, /\.itemIcon/);
+  assert.match(sidebarCss, /\.itemLabel/);
+  assert.match(sidebarCss, /opacity:\s*0/);
+  assert.match(sidebarCss, /transform:\s*translateX/);
+  assert.match(sidebarCss, /\.expanded\s+\.itemLabel/);
+});
+
 test('sidebar uses a clean collapse control instead of an X button', () => {
-  assert.match(sidebar, /aria-label="Recolher menu"/);
+  assert.match(sidebar, /aria-label=\{open \? 'Recolher menu' : 'Expandir menu'\}/);
   assert.doesNotMatch(sidebar, />×</);
 });
 
 test('rail icons are visually lighter and aligned', () => {
   assert.match(sidebar, /strokeWidth="1\.45"/);
   assert.match(css, /\.rail-nav a\{[^}]*display:grid[^}]*place-items:center/);
-  assert.match(css, /\.rail-nav a svg\{[^}]*width:21px[^}]*height:21px/);
 });
 
-test('expanded sidebar has no dead left gutter', () => {
-  assert.match(css, /\.sidebar-panel\{[^}]*padding:22px 18px/);
-});
-
-test('home greeting follows the editable profile name', () => {
+test('home greeting follows the editable profile name with concise copy', () => {
   assert.match(sidebar, /zyvo-profile-updated/);
   assert.match(page, /zyvo-profile-updated/);
-  assert.match(page, /Olá, bem-vindo/);
-  assert.match(page, /zyvo-profile/);
+  assert.match(page, /Olá, <strong>\{profileName\}<\/strong>/);
+  assert.doesNotMatch(page, /bem-vindo/);
 });
 
 test('quick actions keep four equal columns with subtle vertical separators', () => {
