@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { FormEvent, ReactNode, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
+import { heroDataUri } from '@/lib/heroData';
 
 function Icon({ children, size = 20 }: { children: ReactNode; size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
@@ -31,7 +32,7 @@ export default function HomePage() {
       <Sidebar />
 
       <div className="hero-visual" aria-hidden="true">
-        <img src="/zyvo-hero-visual.webp" alt="" draggable={false} />
+        <img src={heroDataUri} alt="" draggable={false} />
       </div>
       <div className="hero-veil" aria-hidden="true" />
 
