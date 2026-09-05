@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ChangeEvent, ReactNode, useEffect, useRef, useState } from 'react';
 import styles from './Sidebar.module.css';
 
@@ -24,6 +25,7 @@ const items = [
 ] as const;
 
 export default function Sidebar() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [profileName, setProfileName] = useState(DEFAULT_NAME);
   const [profileImage, setProfileImage] = useState('');
@@ -37,34 +39,22 @@ export default function Sidebar() {
         if (profile.name) setProfileName(profile.name);
         if (profile.image) setProfileImage(profile.image);
       }
-    } catch {
-      // Keep the default profile if local storage is unavailable or malformed.
-    }
+    } catch {}
   }, []);
 
   useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
-    };
+    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpen(false); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
   const persistProfile = (name: string, image: string) => {
     const next = { name, image };
-    try {
-      localStorage.setItem(PROFILE_KEY, JSON.stringify(next));
-    } catch {
-      // Ignore storage failures and keep the in-memory edit.
-    }
+    try { localStorage.setItem(PROFILE_KEY, JSON.stringify(next)); } catch {}
     window.dispatchEvent(new CustomEvent(PROFILE_EVENT, { detail: next }));
   };
 
-  const updateName = (value: string) => {
-    setProfileName(value);
-    persistProfile(value || DEFAULT_NAME, profileImage);
-  };
-
+  const updateName = (value: string) => { setProfileName(value); persistProfile(value || DEFAULT_NAME, profileImage); };
   const updatePhoto = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !file.type.startsWith('image/')) return;
@@ -78,68 +68,24 @@ export default function Sidebar() {
     event.target.value = '';
   };
 
-  const initials = (profileName || DEFAULT_NAME)
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join('');
+  const initials = (profileName || DEFAULT_NAME).split(' ').filter(Boolean).slice(0,2).map((part)=>part[0]?.toUpperCase()).join('');
+  const isActive = (href: string) => href === '/' ? pathname === '/' : pathname === href || pathname.startsWith(`${href}/`);
 
-  return (
-    <aside className={`rail ${styles.unifiedRail} ${open ? styles.expanded : ''}`} aria-label="Navegação lateral">
-      <div className={styles.profileRow}>
-        <button
-          className="rail-avatar"
-          type="button"
-          aria-label="Alterar foto do perfil"
-          onClick={() => open ? fileInputRef.current?.click() : setOpen(true)}
-        >
-          {profileImage ? <img src={profileImage} alt="Perfil" /> : <span className="avatar-monogram">{initials}</span>}
-          <span className="status-dot" aria-hidden="true" />
-        </button>
-        <input ref={fileInputRef} className={styles.fileInput} type="file" accept="image/*" onChange={updatePhoto} tabIndex={-1} />
-        <div className={styles.profileMeta} aria-hidden={!open}>
-          <input
-            className={styles.profileNameField}
-            value={profileName}
-            onChange={(event) => updateName(event.target.value)}
-            onBlur={() => {
-              if (!profileName.trim()) updateName(DEFAULT_NAME);
-            }}
-            aria-label="Nome do perfil"
-            maxLength={42}
-            tabIndex={open ? 0 : -1}
-          />
-          <span className={styles.profileRole}>Marketing Digital</span>
-        </div>
+  return <aside className={`rail ${styles.unifiedRail} ${open ? styles.expanded : ''}`} aria-label="Navegação lateral">
+    <div className={styles.profileRow}>
+      <button className="rail-avatar" type="button" aria-label="Alterar foto do perfil" onClick={() => open ? fileInputRef.current?.click() : setOpen(true)}>
+        {profileImage ? <img src={profileImage} alt="Perfil" /> : <span className="avatar-monogram">{initials}</span>}
+        <span className="status-dot" aria-hidden="true" />
+      </button>
+      <input ref={fileInputRef} className={styles.fileInput} type="file" accept="image/*" onChange={updatePhoto} tabIndex={-1} />
+      <div className={styles.profileMeta} aria-hidden={!open}>
+        <input className={styles.profileNameField} value={profileName} onChange={(event)=>updateName(event.target.value)} onBlur={()=>{if(!profileName.trim()) updateName(DEFAULT_NAME)}} aria-label="Nome do perfil" maxLength={42} tabIndex={open?0:-1}/>
+        <span className={styles.profileRole}>Marketing Digital</span>
       </div>
-
-      <nav className={styles.nav} aria-label="Menu principal">
-        {items.map((item, index) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`${styles.navItem} ${index === 0 ? styles.selected : ''}`}
-            aria-label={item.label}
-            title={open ? undefined : item.label}
-          >
-            <span className={styles.itemIcon}><RailIcon>{item.icon}</RailIcon></span>
-            <span className={styles.itemLabel}>{item.label}</span>
-          </Link>
-        ))}
-      </nav>
-
-      <div className={styles.bottomControl}>
-        <button
-          className={styles.toggleButton}
-          type="button"
-          onClick={() => setOpen((value) => !value)}
-          aria-label={open ? 'Recolher menu' : 'Expandir menu'}
-          aria-expanded={open}
-        >
-          <RailIcon><path d="m9 7 5 5-5 5"/></RailIcon>
-        </button>
-      </div>
-    </aside>
-  );
+    </div>
+    <nav className={styles.nav} aria-label="Menu principal">
+      {items.map((item)=><Link key={item.href} href={item.href} className={`${styles.navItem} ${isActive(item.href) ? styles.selected : ''}`} aria-current={isActive(item.href)?'page':undefined} aria-label={item.label} title={open?undefined:item.label}><span className={styles.itemIcon}><RailIcon>{item.icon}</RailIcon></span><span className={styles.itemLabel}>{item.label}</span></Link>)}
+    </nav>
+    <div className={styles.bottomControl}><button className={styles.toggleButton} type="button" onClick={()=>setOpen((value)=>!value)} aria-label={open?'Recolher menu':'Expandir menu'} aria-expanded={open}><RailIcon><path d="m9 7 5 5-5 5"/></RailIcon></button></div>
+  </aside>;
 }
