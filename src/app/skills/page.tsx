@@ -13,9 +13,7 @@ import meetingBgPart2 from './meeting-bg.part2';
 import meetingBgPart3 from './meeting-bg.part3';
 import meetingBgPart4 from './meeting-bg.part4';
 import meetingBgPart5 from './meeting-bg.part5';
-import analysisBgPart1 from './analysis-bg.part1';
-import analysisBgPart2 from './analysis-bg.part2';
-import analysisBgPart3 from './analysis-bg.part3';
+import analysisBgQ85 from './analysis-bg-q85';
 
 const FALLBACK_METRICS=[
   {label:'Comunicação',value:88,description:'Fala segura e fácil de acompanhar'},
@@ -60,7 +58,7 @@ export default function SkillsPage(){
   const heroMedia='/skills-bg-hero.webp';
   const insightMedia='/skills-bg-insights.webp';
   const meetingMedia=`data:image/avif;base64,${meetingBgPart1}${meetingBgPart2}${meetingBgPart3}${meetingBgPart4}${meetingBgPart5}`;
-  const analysisMedia=`data:image/avif;base64,${analysisBgPart1}${analysisBgPart2}${analysisBgPart3}`;
+  const analysisMedia=`data:image/avif;base64,${analysisBgQ85}`;
   const displayedScore=Math.round(score*(targetScore/82));
   const captureTitle=(typeof analysisContent.captureTitle==='string'?analysisContent.captureTitle:FALLBACK_COPY.capture).replaceAll(' ','\n');
 
