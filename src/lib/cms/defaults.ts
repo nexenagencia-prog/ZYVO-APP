@@ -3,6 +3,7 @@ import type { CmsBundle } from './types';
 export const DEFAULT_NAVIGATION = [
   { nav_key:'home', label:'Início', href:'/', icon_key:'home', sort_order:0, is_visible:true },
   { nav_key:'new-meeting', label:'Criar reunião', href:'/reuniao-instantanea', icon_key:'video', sort_order:10, is_visible:true },
+  { nav_key:'live', label:'Entrar ao vivo', href:'/entrar-ao-vivo', icon_key:'live', sort_order:15, is_visible:true },
   { nav_key:'agenda', label:'Agenda', href:'/agenda', icon_key:'calendar', sort_order:20, is_visible:true },
   { nav_key:'contacts', label:'Contatos', href:'/contatos', icon_key:'contacts', sort_order:30, is_visible:true },
   { nav_key:'notes', label:'Minhas anotações', href:'/minhas-anotacoes', icon_key:'notes', sort_order:40, is_visible:true },
