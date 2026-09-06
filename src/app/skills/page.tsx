@@ -8,6 +8,11 @@ import { DEFAULT_BUNDLE } from '@/lib/cms/defaults';
 import { sectionByKey } from '@/lib/cms/merge';
 import type { CmsBundle } from '@/lib/cms/types';
 import styles from './skills.module.css';
+import meetingBgPart1 from './meeting-bg.part1';
+import meetingBgPart2 from './meeting-bg.part2';
+import meetingBgPart3 from './meeting-bg.part3';
+import meetingBgPart4 from './meeting-bg.part4';
+import meetingBgPart5 from './meeting-bg.part5';
 
 const FALLBACK_METRICS=[['Comunicação',88],['Clareza',91],['Escuta',84],['Objetividade',76],['Perguntas',89],['Condução',85]] as const;
 const FALLBACK_COPY={performance:'Seu desempenho',eyebrow:'PERFORMANCE HUMANA',insights:'INSIGHTS REAIS',insightTitle:'Insights e Conteúdo',meetingTitle:'Analisar Reuniões',analysisTitle:'Analise suas reuniões',capture:'CAPTURE. ANALISE. EVOLUA.'};
@@ -34,7 +39,7 @@ export default function SkillsPage(){
   const actionLabel=typeof performanceContent.actionLabel==='string'?performanceContent.actionLabel:'Analisar performance';
   const heroMedia='/skills-bg-hero.webp';
   const insightMedia='/skills-bg-insights.webp';
-  const meetingMedia='/skills-bg-meeting.webp';
+  const meetingMedia=`data:image/avif;base64,${meetingBgPart1}${meetingBgPart2}${meetingBgPart3}${meetingBgPart4}${meetingBgPart5}`;
   const analysisMedia='/skills-bg-analysis.webp';
   const displayedScore=Math.round(score*(targetScore/82));
   const captureTitle=(typeof analysisContent.captureTitle==='string'?analysisContent.captureTitle:FALLBACK_COPY.capture).replaceAll(' ','\n');
