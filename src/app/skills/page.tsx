@@ -33,7 +33,7 @@ export default function SkillsPage(){
   const periodLabel=typeof performanceContent.periodLabel==='string'?performanceContent.periodLabel:'em relação ao período anterior';
   const actionLabel=typeof performanceContent.actionLabel==='string'?performanceContent.actionLabel:'Analisar performance';
   const heroMedia='/skills-bg-hero.webp';
-  const insightMedia='/skills-bg-insights.webp';
+  const insightMedia='/skills-bg-insights.jpeg';
   const meetingMedia='/skills-bg-meeting.webp';
   const analysisMedia='/skills-bg-analysis.webp';
   const displayedScore=Math.round(score*(targetScore/82));
