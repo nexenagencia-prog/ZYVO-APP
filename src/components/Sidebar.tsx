@@ -11,6 +11,7 @@ import styles from './Sidebar.module.css';
 const PROFILE_KEY = 'zyvo-profile';
 const PROFILE_EVENT = 'zyvo-profile-updated';
 const DEFAULT_NAME = 'Sandro Bello';
+const LIVE_ITEM: CmsNavigationItem = { nav_key:'live', label:'Entrar ao vivo', href:'/entrar-ao-vivo', icon_key:'live', sort_order:15, is_visible:true };
 
 function RailIcon({ children }: { children: ReactNode }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
@@ -19,6 +20,7 @@ function RailIcon({ children }: { children: ReactNode }) {
 const iconPaths:Record<string,ReactNode>={
   home:<><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></>,
   video:<><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></>,
+  live:<><circle cx="12" cy="12" r="2.2"/><path d="M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4"/><path d="M4.6 4.6a10.5 10.5 0 0 0 0 14.8M19.4 4.6a10.5 10.5 0 0 1 0 14.8"/></>,
   calendar:<><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h2M14 14h2"/></>,
   contacts:<><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.5-6 6-6s6 2 6 6M14 15c3.7 0 6 1.5 6 5"/></>,
   notes:<><path d="M6 3h9l3 3v15H6z"/><path d="M15 3v4h4M9 12h6M9 16h6"/></>,
@@ -28,6 +30,7 @@ const iconPaths:Record<string,ReactNode>={
 };
 
 const items = DEFAULT_BUNDLE.navigation;
+const withLive = (list:CmsNavigationItem[]) => list.some(item=>item.href==='/entrar-ao-vivo') ? list : [...list, LIVE_ITEM].sort((a,b)=>(a.sort_order||0)-(b.sort_order||0));
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -35,7 +38,7 @@ export default function Sidebar() {
   const [profileName, setProfileName] = useState(DEFAULT_NAME);
   const [profileImage, setProfileImage] = useState('');
   const [profileRole,setProfileRole]=useState('Marketing Digital');
-  const [navigation,setNavigation]=useState<CmsNavigationItem[]>(items.map(item=>({...item})));
+  const [navigation,setNavigation]=useState<CmsNavigationItem[]>(withLive(items.map(item=>({...item}))));
   const [cms,setCms]=useState<CmsBundle>(DEFAULT_BUNDLE);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -51,7 +54,7 @@ export default function Sidebar() {
     } catch {}
     fetchPublicCmsBundle().then(bundle=>{
       setCms(bundle);
-      setNavigation(bundle.navigation);
+      setNavigation(withLive(bundle.navigation));
       if(!hasLocalName && bundle.profile.display_name) setProfileName(bundle.profile.display_name);
       if(!hasLocalImage && bundle.profile.avatar_url) setProfileImage(bundle.profile.avatar_url);
       if(bundle.profile.role_label) setProfileRole(bundle.profile.role_label);
