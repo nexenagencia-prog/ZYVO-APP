@@ -1,4 +1,4 @@
-:root{--rail-space:88px}
+.page{--rail-space:88px}
 .page{min-height:100dvh;color:#f5f8fb;background:radial-gradient(circle at 12% 10%,rgba(122,177,231,.2),transparent 24%),radial-gradient(circle at 96% 84%,rgba(111,172,233,.22),transparent 20%),linear-gradient(135deg,#09131e 0%,#02080d 55%,#08131e 100%);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;overflow-x:hidden}
 .workspace{min-height:100dvh;padding:112px 28px 32px var(--rail-space);display:grid;grid-template-columns:minmax(310px,1.05fr) minmax(360px,.95fr) minmax(430px,1.18fr);grid-template-rows:minmax(610px,1fr) 92px;gap:20px;transition:padding-left .28s ease}
 .panel,.bottomBar{border:1px solid rgba(180,211,238,.16);background:linear-gradient(180deg,rgba(18,32,45,.76),rgba(4,12,19,.82));backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 24px 70px rgba(0,0,0,.34)}
