@@ -1,0 +1,1 @@
+const referencePhoto = 'data:image/webp;base64,UklGR...';
