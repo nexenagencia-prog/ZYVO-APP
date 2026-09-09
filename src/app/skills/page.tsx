@@ -2,6 +2,7 @@
 
 import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
+import referenceCenter from './reference-center';
 import styles from './skills.module.css';
 
 type IconName = 'chat'|'sun'|'ear'|'target'|'question'|'bars'|'users'|'spark'|'doc'|'check'|'play'|'arrow'|'bulb'|'warn';
@@ -51,10 +52,7 @@ export default function SkillsPage(){
         </section>
 
         <article className={styles.visualCard}>
-          <div className={styles.visualImage}/>
-          <div className={styles.visualOverlay}/>
-          <div className={styles.visualCaption}>CONVERSAS<br/>QUE GERAM<br/>EVOLUÇÃO<div/></div>
-          <div className={styles.zyvo}>ZYVO</div>
+          <div className={styles.visualImage} style={{backgroundImage:`url(${referenceCenter})`}}/>
         </article>
 
         <article className={styles.scoreCard}>
