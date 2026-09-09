@@ -1,77 +1,102 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Topbar from '@/components/Topbar';
-import { fetchPublicCmsBundle } from '@/lib/cms/client';
-import { DEFAULT_BUNDLE } from '@/lib/cms/defaults';
-import { sectionByKey } from '@/lib/cms/merge';
-import type { CmsBundle } from '@/lib/cms/types';
 import styles from './skills.module.css';
-import meetingBgPart1 from './meeting-bg.part1';
-import meetingBgPart2 from './meeting-bg.part2';
-import meetingBgPart3 from './meeting-bg.part3';
-import meetingBgPart4 from './meeting-bg.part4';
-import meetingBgPart5 from './meeting-bg.part5';
-import analysisBgQ85 from './analysis-bg-q85';
 
-const FALLBACK_METRICS=[
-  {label:'Comunicação',value:88,description:'Fala segura e fácil de acompanhar'},
-  {label:'Clareza',value:91,description:'Mensagens diretas e bem estruturadas'},
-  {label:'Escuta',value:84,description:'Boa resposta às falas do grupo'},
-  {label:'Objetividade',value:76,description:'Principal ponto para ganhar eficiência'},
-  {label:'Perguntas',value:89,description:'Perguntas que fazem a conversa avançar'},
-  {label:'Condução',value:85,description:'Bom controle de ritmo e direção'},
-] as const;
-const METRIC_DESCRIPTIONS:Record<string,string>={
-  'Comunicação':'Fala segura e fácil de acompanhar',
-  'Clareza':'Mensagens diretas e bem estruturadas',
-  'Escuta':'Boa resposta às falas do grupo',
-  'Objetividade':'Principal ponto para ganhar eficiência',
-  'Perguntas':'Perguntas que fazem a conversa avançar',
-  'Argumentação':'Argumentos consistentes e bem sustentados',
-  'Condução':'Bom controle de ritmo e direção',
-};
-const FALLBACK_COPY={performance:'Sua performance',eyebrow:'PERFORMANCE HUMANA',insights:'INSIGHTS REAIS',insightTitle:'O que melhorar agora',meetingTitle:'Reveja e entenda o que funcionou',analysisTitle:'Transforme uma gravação em plano de ação',capture:'CAPTURE. ANALISE. EVOLUA.'};
-function MetricRing({label,target,index,description}:{label:string;target:number;index:number;description:string}){const[value,setValue]=useState(0);useEffect(()=>{let raf=0;const started=performance.now()+index*55,duration=1200;const tick=(now:number)=>{const p=Math.max(0,Math.min(1,(now-started)/duration));setValue(Math.round(target*(1-Math.pow(1-p,3))));if(p<1)raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick);return()=>cancelAnimationFrame(raf)},[target,index]);return <div className={styles.metric}><div className={styles.metricRing} style={{'--value':`${value*3.6}deg`} as React.CSSProperties}><strong>{value}</strong></div><span>{label}</span><small>{description}</small></div>}
+type IconName = 'chat'|'sun'|'ear'|'target'|'question'|'bars'|'users'|'spark'|'doc'|'check'|'play'|'arrow'|'bulb'|'warn';
+
+function Icon({name,size=22}:{name:IconName;size?:number}){
+  const common={width:size,height:size,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.55,strokeLinecap:'round' as const,strokeLinejoin:'round' as const,'aria-hidden':true};
+  const paths:Record<IconName,React.ReactNode>={
+    chat:<><path d="M20 11.5a8 8 0 1 1-3.5-6.6"/><path d="M7 18.2 4 20l.8-3.3"/></>,
+    sun:<><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></>,
+    ear:<><path d="M16.8 14.2c-.8 1.2-1.4 1.3-2.3 1.8-.8.5-1.3 1.3-1.5 2.3-.3 1.5-1.3 2.7-3 2.7-2.1 0-3.4-1.7-3.4-3.7V9.4A5.6 5.6 0 0 1 12.2 4c3.2 0 5.5 2.5 5.5 5.5 0 2-.6 3.4-.9 4.7Z"/><path d="M10 10.2a2.2 2.2 0 0 1 4.4.1c0 1.2-.6 1.9-1.4 2.4"/></>,
+    target:<><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 12 18.5 5.5M17 5h2v2"/></>,
+    question:<><circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.5 2.5 0 1 1 3.6 2.3c-.8.4-1.3 1-1.3 1.7v.5M12 17h.01"/></>,
+    bars:<><path d="M6 20V11M12 20V5M18 20v-8"/></>,
+    users:<><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-4 2.5-6 6-6s6 2 6 6M14 15c3.7 0 6 1.5 6 5"/></>,
+    spark:<><path d="M12 2c.7 4.6 2.6 6.5 7 7-4.4.5-6.3 2.4-7 7-.7-4.6-2.6-6.5-7-7 4.4-.5 6.3-2.4 7-7Z"/></>,
+    doc:<><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5M9 12h6M9 16h6"/></>,
+    check:<><circle cx="12" cy="12" r="9"/><path d="m8 12 2.7 2.7L16.5 9"/></>,
+    play:<><path d="m9 7 8 5-8 5z" fill="currentColor" stroke="none"/></>,
+    arrow:<><path d="m9 6 6 6-6 6"/></>,
+    bulb:<><path d="M9 18h6M10 21h4"/><path d="M8.5 14.8A6 6 0 1 1 15.5 15c-.9.6-1.5 1.5-1.5 2.5h-4c0-1-.6-1.9-1.5-2.7Z"/></>,
+    warn:<><path d="M12 7v6M12 17h.01"/></>,
+  };
+  return <svg {...common}>{paths[name]}</svg>;
+}
+
+const metrics=[
+  {label:'Comunicação',value:88,icon:'chat' as IconName},
+  {label:'Clareza',value:91,icon:'sun' as IconName},
+  {label:'Escuta',value:84,icon:'ear' as IconName},
+  {label:'Objetividade',value:76,icon:'target' as IconName},
+  {label:'Perguntas',value:89,icon:'question' as IconName},
+  {label:'Argumentação',value:81,icon:'bars' as IconName},
+  {label:'Condução',value:85,icon:'users' as IconName},
+];
 
 export default function SkillsPage(){
-  const[score,setScore]=useState(0);
-  const[cms,setCms]=useState<CmsBundle>(DEFAULT_BUNDLE);
-  useEffect(()=>{let raf=0;const start=performance.now();const tick=(now:number)=>{const p=Math.min(1,(now-start)/1300);setScore(Math.round(82*(1-Math.pow(1-p,3))));if(p<1)raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick);fetchPublicCmsBundle().then(bundle=>setCms(bundle)).catch(()=>{});return()=>cancelAnimationFrame(raf)},[]);
+  return <main className={styles.page}>
+    <Sidebar />
+    <Topbar />
+    <section className={styles.canvas}>
+      <div className={styles.topGrid}>
+        <section className={styles.intro}>
+          <span className={styles.eyebrow}>SKILLS</span>
+          <h1>Veja aqui o<br/>resultado da<br/>última reunião.</h1>
+          <p>Sua performance em detalhes,<br/>com insights da IA.</p>
+          <button className={styles.highlightButton}><span><Icon name="play" size={18}/></span>Reproduzir highlights</button>
+        </section>
 
-  const page=cms.pages.skills;
-  const hero=sectionByKey(page,'skills.hero');
-  const performanceSection=sectionByKey(page,'skills.performance');
-  const insight=sectionByKey(page,'skills.insights');
-  const meeting=sectionByKey(page,'skills.meeting');
-  const analysis=sectionByKey(page,'skills.analysis');
-  const heroContent=(hero.content||{}) as Record<string,unknown>;
-  const performanceContent=(performanceSection.content||{}) as Record<string,unknown>;
-  const analysisContent=(analysis.content||{}) as Record<string,unknown>;
-  const metricRows=Array.isArray(performanceContent.metrics)?performanceContent.metrics as {label?:string;value?:number;description?:string}[]:FALLBACK_METRICS.map(item=>({...item}));
-  const targetScore=typeof performanceContent.score==='number'?performanceContent.score:82;
-  const delta=typeof performanceContent.delta==='string'?performanceContent.delta:'+6,4%';
-  const periodLabel=typeof performanceContent.periodLabel==='string'?performanceContent.periodLabel:'nas últimas 8 reuniões';
-  const actionLabel=typeof performanceContent.actionLabel==='string'?performanceContent.actionLabel:'Ver análise completa';
-  const performanceSummary=typeof performanceContent.summary==='string'?performanceContent.summary:'Performance forte: clareza e perguntas estão puxando seu resultado para cima. O maior ganho agora está em ser mais objetivo.';
-  const heroMedia='/skills-bg-hero.webp';
-  const insightMedia='/skills-bg-insights.webp';
-  const meetingMedia=`data:image/avif;base64,${meetingBgPart1}${meetingBgPart2}${meetingBgPart3}${meetingBgPart4}${meetingBgPart5}`;
-  const analysisMedia=`data:image/avif;base64,${analysisBgQ85}`;
-  const displayedScore=Math.round(score*(targetScore/82));
-  const captureTitle=(typeof analysisContent.captureTitle==='string'?analysisContent.captureTitle:FALLBACK_COPY.capture).replaceAll(' ','\n');
+        <article className={styles.visualCard}>
+          <div className={styles.visualImage}/>
+          <div className={styles.visualOverlay}/>
+          <div className={styles.visualCaption}>CONVERSAS<br/>QUE GERAM<br/>EVOLUÇÃO<div/></div>
+          <div className={styles.zyvo}>ZYVO</div>
+        </article>
 
-  return <main className={styles.page} style={{paddingLeft:'94px',paddingTop:'104px','--header-height':'104px'} as React.CSSProperties}>
-  <Sidebar />
-  <Topbar />
-  <section className={styles.board}>
-    <article className={`${styles.card} ${styles.heroCard}`}><div className={styles.heroMedia} style={{backgroundImage:`url(${heroMedia})`,backgroundPosition:'center center'}}/><div className={styles.heroShade}/><div className={styles.heroTop}><p>{hero.subtitle || FALLBACK_COPY.eyebrow}</p><h2>{hero.title || 'Skills'}</h2><h3>{hero.body || 'Transforme cada reunião em decisões melhores, comunicação mais clara e evolução mensurável.'}</h3></div><div className={styles.heroBottom}><i/><p>{typeof heroContent.insightsLabel==='string'?heroContent.insightsLabel:FALLBACK_COPY.insights}</p><strong>{typeof heroContent.insightsTitle==='string'?heroContent.insightsTitle:'Veja onde você evoluiu e o que fazer melhor na próxima reunião.'}</strong><button><span>▷</span>{typeof heroContent.ctaLabel==='string'?heroContent.ctaLabel:'Ver meus resultados'}</button></div></article>
+        <article className={styles.scoreCard}>
+          <button className={styles.more}>•••</button>
+          <h2>Seu desempenho</h2>
+          <div className={styles.scoreBody}>
+            <div className={styles.scoreRing}><div><strong>86</strong><span>/100</span><b>↑ +7%</b><small>em relação à<br/>última reunião</small></div></div>
+            <div className={styles.scoreText}><strong>Ótima evolução!</strong><p>Você foi mais objetivo e fez<br/>perguntas mais estratégicas<br/>nesta reunião.</p></div>
+          </div>
+        </article>
+      </div>
 
-    <article className={`${styles.card} ${styles.performanceCard}`}><header><div><h3>{performanceSection.title || FALLBACK_COPY.performance}</h3><p className={styles.performanceLead}>{performanceSummary}</p></div><button>{actionLabel} <b>›</b></button></header><div className={styles.performanceMain}><div className={styles.scoreRing} style={{'--score':`${displayedScore*3.6}deg`} as React.CSSProperties}><div><strong>{displayedScore}</strong><span>/100</span></div></div><div className={styles.trend}><div className={styles.delta}>↑ <strong>{delta}</strong><small>{periodLabel}</small></div><svg viewBox="0 0 320 100" preserveAspectRatio="none"><defs><linearGradient id="blueFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#9dd5ff" stopOpacity=".3"/><stop offset="1" stopColor="#9dd5ff" stopOpacity="0"/></linearGradient></defs><path className={styles.area} d="M0 78 C34 76 46 46 80 47 S121 82 160 70 S196 30 232 33 S270 48 320 42 L320 100 L0 100Z"/><path className={styles.line} d="M0 78 C34 76 46 46 80 47 S121 82 160 70 S196 30 232 33 S270 48 320 42"/><circle cx="320" cy="42" r="4"/></svg><div className={styles.trendExplain}><span>Tendência de performance</span><strong>Você encerrou o período acima da sua média.</strong></div></div></div><div className={styles.metrics}>{metricRows.slice(0,6).map((item,i)=>{const label=item.label||FALLBACK_METRICS[i]?.label||'Métrica';const description=item.description||METRIC_DESCRIPTIONS[label]||'Indicador de qualidade da sua performance';return <MetricRing key={`${label}-${i}`} label={label} target={typeof item.value==='number'?item.value:FALLBACK_METRICS[i]?.value||0} index={i} description={description}/>})}</div></article>
+      <div className={styles.metrics}>
+        {metrics.map(metric=><article key={metric.label} className={styles.metricCard}>
+          <div className={styles.metricTop}><span className={styles.metricIcon}><Icon name={metric.icon} size={20}/></span><span>{metric.label}</span></div>
+          <strong>{metric.value}%</strong>
+          <div className={styles.track}><i style={{width:`${metric.value}%`}}/></div>
+        </article>)}
+      </div>
 
-    <div className={styles.sideCards}><article className={`${styles.card} ${styles.insightCard}`}><div className={`${styles.cardMedia} ${styles.insightMedia}`} style={{backgroundImage:`url(${insightMedia})`,backgroundPosition:'center center'}}/><div className={styles.cardShade}/><div className={styles.sideContent} style={{height:'100%',display:'flex',flexDirection:'column',alignItems:'flex-start'}}><span className={styles.bookIcon}>▢</span><h3>{insight.title || FALLBACK_COPY.insightTitle}</h3><p>{insight.body || 'Descubra padrões, pontos fortes e ações práticas para evoluir já na próxima reunião.'}</p><button style={{marginTop:'auto',flex:'0 0 auto'}}>→</button></div></article><article className={`${styles.card} ${styles.meetingCard}`}><div className={`${styles.cardMedia} ${styles.meetingMedia}`} style={{backgroundImage:`url(${meetingMedia})`,backgroundPosition:'center center'}}/><div className={styles.cardShade}/><div className={styles.sideContent} style={{height:'100%',display:'flex',flexDirection:'column',alignItems:'flex-start'}}><span className={styles.bookIcon}>▣</span><h3>{meeting.title || FALLBACK_COPY.meetingTitle}</h3><p style={{transform:'translateY(-16px)'}}>{meeting.body || 'Encontre os momentos decisivos, falas-chave e oportunidades que mais impactaram o resultado.'}</p><button style={{marginTop:'auto',flex:'0 0 auto',transform:'translateY(-16px)'}}>→</button></div></article></div>
+      <div className={styles.bottomGrid}>
+        <article className={styles.detailCard}>
+          <header><span><Icon name="spark" size={23}/></span><h3>Principais insights da IA</h3><button><Icon name="arrow" size={18}/></button></header>
+          <div className={styles.insightRow}><span className={`${styles.status} ${styles.green}`}>↑</span><div><strong>Sua clareza aumentou 12%</strong><p>em relação às últimas 5 reuniões.</p></div></div>
+          <div className={styles.insightRow}><span className={`${styles.status} ${styles.orange}`}><Icon name="warn" size={19}/></span><div><strong>Você interrompeu 3 vezes</strong><p>Tente dar mais espaço para o outro.</p></div></div>
+          <div className={styles.insightRow}><span className={`${styles.status} ${styles.orange}`}><Icon name="bulb" size={19}/></span><div><strong>O cliente demonstrou alto interesse</strong><p>quando você falou sobre a proposta.</p></div></div>
+        </article>
 
-    <article className={`${styles.card} ${styles.analysisCard}`} style={{backgroundImage:`linear-gradient(90deg,rgba(3,10,17,.88) 0%,rgba(3,10,17,.66) 31%,rgba(3,10,17,.12) 52%,rgba(3,10,17,.02) 72%,rgba(3,10,17,.03) 100%),url(${analysisMedia})`,backgroundSize:'cover',backgroundPosition:'center center',backgroundRepeat:'no-repeat'}}><div className={styles.analysisCopy} style={{position:'relative',zIndex:2}}><div className={styles.cameraIcon}>▣</div><div style={{height:'100%',display:'flex',flexDirection:'column',alignItems:'flex-start',minWidth:0}}><h3>{analysis.title || FALLBACK_COPY.analysisTitle}</h3><p>{analysis.body || 'Envie a reunião e receba score, pontos fortes, riscos e recomendações objetivas para melhorar sua próxima conversa.'}</p><div style={{marginTop:'auto',alignSelf:'flex-start'}}><button style={{marginTop:0}}><b>↥</b>{typeof analysisContent.buttonLabel==='string'?analysisContent.buttonLabel:'Selecionar arquivo'}</button><small>{typeof analysisContent.fileHint==='string'?analysisContent.fileHint:'MP4, MOV ou WEBM'}</small></div></div></div><div/><div className={styles.capture}><p>{captureTitle.split('\n').map((line,index)=><span key={`${line}-${index}`}>{line}{index<captureTitle.split('\n').length-1?<br/>:null}</span>)}</p><i/><span>{typeof analysisContent.captureBody==='string'?analysisContent.captureBody:'Da gravação para decisões mais claras e evolução mensurável.'}</span></div></article>
-  </section>
-</main>}
+        <article className={styles.detailCard}>
+          <header><span><Icon name="doc" size={23}/></span><h3>Momentos importantes</h3><button><Icon name="arrow" size={18}/></button></header>
+          <div className={styles.momentRow}><button className={styles.play}><Icon name="play" size={15}/></button><time>12:43</time><div><strong>Objeção sobre preço</strong><p>Cliente levantou uma<br/>preocupação importante.</p></div></div>
+          <div className={styles.momentRow}><button className={styles.play}><Icon name="play" size={15}/></button><time>18:27</time><div><strong>Oportunidade identificada</strong><p>Interesse em implementar<br/>ainda este ano.</p></div></div>
+          <div className={styles.momentRow}><button className={styles.play}><Icon name="play" size={15}/></button><time>31:10</time><div><strong>Decisão</strong><p>Alinhamento para próxima etapa.</p></div></div>
+        </article>
+
+        <article className={styles.detailCard}>
+          <header><span><Icon name="check" size={23}/></span><h3>Próximas ações</h3><button><Icon name="arrow" size={18}/></button></header>
+          <label className={styles.actionRow}><input type="checkbox" defaultChecked/><span/><div><strong>Enviar proposta</strong><p>Sandro · até sexta-feira</p></div></label>
+          <label className={styles.actionRow}><input type="checkbox"/><span/><div><strong>Revisar contrato</strong><p>Cliente · 15/09</p></div></label>
+          <label className={styles.actionRow}><input type="checkbox"/><span/><div><strong>Agendar nova reunião</strong><p>Sandro · 22/09</p></div></label>
+        </article>
+      </div>
+    </section>
+  </main>;
+}
